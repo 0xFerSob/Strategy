@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Strategy (MSTR) — Capital Structure Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prop-types@15/prop-types.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/recharts@2.8.0/umd/Recharts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
+  <style>
+    :root {
+      --bg0:#04080f; --bg1:#0a1020; --bg2:#0e1830; --bg3:#162240;
+      --border:#1d2e4a; --borderL:#274060;
+      --t1:#e8edf7; --t2:#8ba3c7; --t3:#4e6a96;
+      --green:#22c55e; --yellow:#eab308; --orange:#f97316;
+      --blue:#3b82f6; --cyan:#06b6d4; --red:#ef4444; --purple:#a855f7;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg0);color:var(--t1);font-family:'Inter','Segoe UI',system-ui,sans-serif;font-size:13px;line-height:1.5;}
+    .hdr{background:linear-gradient(120deg,#0a1020,#0d1832,#0a1020);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .hdr-left{display:flex;align-items:center;gap:12px;}
+    .logo{width:38px;height:38px;background:linear-gradient(135deg,#f97316,#fb923c);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff;flex-shrink:0;}
+    .hdr-title{font-size:17px;font-weight:700;letter-spacing:-.3px;}
+    .hdr-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+    .hdr-right{text-align:right;font-size:11px;color:var(--t3);line-height:1.7;}
+    .hdr-right a{color:var(--cyan);text-decoration:none;}
+    .main{padding:22px 28px;max-width:1680px;margin:0 auto;}
+    .tabs{display:flex;gap:3px;background:var(--bg1);padding:4px;border-radius:10px;margin-bottom:22px;width:fit-content;flex-wrap:wrap;}
+    .tab{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .15s;}
+    .tab.active{background:var(--bg2);color:var(--t1);box-shadow:0 1px 4px rgba(0,0,0,.4);}
+    .sec{margin-bottom:28px;}
+    .sec-title{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+    .sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+    .card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:18px;}
+    .card-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:7px;}
+    .card-val{font-size:22px;font-weight:800;}
+    .card-sub{font-size:11px;color:var(--t2);margin-top:3px;}
+    .tbl-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+    .tbl-scroll{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#070e1c;padding:9px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);border-bottom:1px solid var(--border);white-space:nowrap;}
+    td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:12px;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:var(--bg3);}
+    .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+    .b-sec{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.25);}
+    .b-conv{background:rgba(6,182,212,.12);color:#06b6d4;border:1px solid rgba(6,182,212,.25);}
+    .b-pref{background:rgba(249,115,22,.12);color:#f97316;border:1px solid rgba(249,115,22,.25);}
+    .b-com{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25);}
+    .rank{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:var(--bg1);border:1px solid var(--border);color:var(--t2);flex-shrink:0;}
+    .y-pos{color:#22c55e;font-weight:700;font-family:monospace;}
+    .y-zero{color:var(--t3);font-family:monospace;}
+    .y-na{color:var(--t3);font-style:italic;}
+    .y-var{color:#a855f7;font-weight:700;font-family:monospace;}
+    .src-btn{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;text-decoration:none;margin-right:3px;margin-top:2px;}
+    .src-sec{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+    .src-press{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);}
+    .src-web{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);}
+    .ttm-near{color:#ef4444;font-weight:700;}
+    .ttm-mid{color:#eab308;font-weight:600;}
+    .ttm-far{color:#22c55e;}
+    .ttm-perp{color:var(--t3);font-style:italic;}
+    .cum-yes{color:#22c55e;font-size:10px;}
+    .cum-no{color:#ef4444;font-size:10px;}
+    .cum-na{color:var(--t3);font-size:10px;}
+    .strc-badge{font-size:9px;background:rgba(249,115,22,.2);color:#f97316;padding:2px 5px;border-radius:3px;margin-left:5px;vertical-align:middle;}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    @media(max-width:1100px){.charts-grid{grid-template-columns:1fr;}}
+    .chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:20px;}
+    .chart-title{font-size:13px;font-weight:700;margin-bottom:16px;color:var(--t1);}
+    .chart-note{font-size:10px;color:var(--t3);margin-top:8px;}
+    .wfall-tier{border-radius:10px;overflow:hidden;margin-bottom:8px;}
+    .wfall-hdr{padding:10px 18px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .wfall-hdr span{font-size:11px;font-weight:400;color:var(--t2);}
+    .wfall-row{padding:12px 18px;font-size:12px;display:grid;align-items:start;gap:10px;grid-template-columns:22px 1fr 100px 90px 90px 90px 140px;}
+    .wfall-lbl{font-size:10px;color:var(--t3);margin-bottom:3px;}
+    .wfall-val{font-family:monospace;font-size:12px;}
+    .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    @media(max-width:900px){.pay-grid{grid-template-columns:1fr;}}
+    .pay-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:18px;}
+    .pay-card-title{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .pay-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;}
+    .pay-row:last-child{border-bottom:none;}
+    .pay-name{color:var(--t2);}
+    .pay-amt{font-family:monospace;font-weight:700;}
+    .pay-total{display:flex;justify-content:space-between;align-items:center;padding:10px 0 0;margin-top:4px;border-top:2px solid var(--borderL);font-size:13px;font-weight:700;}
+    .alert{background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:11px 15px;margin-bottom:18px;font-size:11px;color:#f97316;line-height:1.7;}
+    .info-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:11px 15px;margin-bottom:16px;font-size:11px;color:#8ba3c7;line-height:1.7;}
+    .info-box a{color:var(--cyan);}
+    .strc-hdr{background:linear-gradient(120deg,rgba(249,115,22,.08),rgba(168,85,247,.08));border:1px solid rgba(249,115,22,.3);border-radius:12px;padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;gap:16px;}
+    .strc-logo{width:48px;height:48px;flex-shrink:0;background:linear-gradient(135deg,#f97316,#a855f7);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;}
+    .cov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;}
+    .cov-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:16px;}
+    .cov-card.hl{border-color:rgba(249,115,22,.35);background:linear-gradient(135deg,#0e1830,#1a0e08);}
+    .cov-ttl{font-size:12px;font-weight:700;color:#f97316;display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+    .cov-key{margin-left:auto;font-size:9px;background:rgba(249,115,22,.2);padding:2px 6px;border-radius:3px;}
+    .cov-body{font-size:11px;color:var(--t2);line-height:1.75;}
+    .risk-item{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:8px;padding:12px 15px;margin-bottom:8px;}
+    .risk-ttl{font-size:11px;font-weight:700;color:#ef4444;margin-bottom:4px;}
+    .risk-body{font-size:11px;color:var(--t2);line-height:1.7;}
+    .kt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+    .kt-card{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:12px 14px;}
+    .kt-lbl{font-size:10px;color:var(--t3);margin-bottom:4px;}
+    .kt-val{font-size:14px;font-weight:800;}
+    .pref-compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px;}
+    .pref-card{border-radius:11px;padding:16px;border:1px solid;}
+    .disclaim{background:var(--bg1);border:1px solid var(--border);border-radius:8px;padding:11px 15px;font-size:10px;color:var(--t3);margin-top:28px;line-height:1.7;}
+    .mono{font-family:'Consolas','Monaco',monospace;}
+    .bold{font-weight:700;}
+    .tr{text-align:right;}
+    ::-webkit-scrollbar{width:5px;height:5px;}
+    ::-webkit-scrollbar-track{background:var(--bg0);}
+    ::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px;}
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useMemo } = React;
+const {
+  AreaChart, Area, BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, ReferenceLine, Cell, PieChart, Pie
+} = Recharts;
+
+/* ── TODAY for TTM calc ── */
+const TODAY = new Date(2026, 2, 16); // March 16 2026
+
+function ttmStr(matStr) {
+  if (!matStr) return null;
+  const mat = new Date(matStr);
+  const days = Math.round((mat - TODAY) / 86400000);
+  if (days <= 0) return "Matured";
+  const months = Math.round(days / 30.44);
+  const yrs = (days / 365.25).toFixed(1);
+  return { months, yrs, label: `${months}mo / ${yrs}yr` };
+}
+
+/* ═══════════════════════════════════════════════
+   INSTRUMENTS
+═══════════════════════════════════════════════ */
+const INSTRUMENTS = [
+  {
+    rank:1, name:"6.125% Senior Secured Notes", ticker:"—", type:"Senior Secured", cls:"b-sec", tier:1,
+    amount:500, coupon:6.125, ytm:6.10, maturity:"Feb 1, 2028", matStr:"2028-02-01",
+    issued:"Mar 2023", conv:null, cumulative:null, payFreq:"Semi-annual (Feb/Aug)",
+    annualPayM:30.63, monthlyPayM:2.55,
+    statedAmt:"$500M", sharesDesc:null,
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000095017025021814/mstr-20241231.htm",
+    pressLink:null,
+    desc:"First-priority lien secured by BTC held in designated custodial accounts. Bitcoin collateral pledged under the indenture.",
+  },
+  {
+    rank:2, name:"0.625% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:1010, coupon:0.625, ytm:0.60, maturity:"Sep 15, 2028", matStr:"2028-09-15",
+    issued:"Sep 2024", conv:"$1,497.68", cumulative:null, payFreq:"Semi-annual (Mar/Sep)",
+    annualPayM:6.31, monthlyPayM:0.53,
+    statedAmt:"$1,010M", sharesDesc:null,
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312524222498/d822569d8k.htm",
+    pressLink:"https://www.strategy.com/press/microstrategy-completes-1-01b-offering-of-0-625-convertible-senior-notes-due-2028_09-20-2024",
+    desc:"Convertible to MSTR common at $1,497.68/share. Semi-annual coupon.",
+  },
+  {
+    rank:3, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:3000, coupon:0.000, ytm:0.00, maturity:"Dec 1, 2029", matStr:"2029-12-01",
+    issued:"Nov 2024", conv:"$672.40", cumulative:null, payFreq:"None (zero-coupon)",
+    annualPayM:0, monthlyPayM:0,
+    statedAmt:"$3,000M", sharesDesc:null,
+    secLink:"https://www.strategy.com/financial-documents",
+    pressLink:null,
+    desc:"Largest single tranche. Zero-coupon; convertible at $672.40. $3B raised Q4 2024.",
+  },
+  {
+    rank:4, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:2600, coupon:0.000, ytm:0.00, maturity:"Feb 1, 2030", matStr:"2030-02-01",
+    issued:"Dec 2024", conv:"$433.43", cumulative:null, payFreq:"None (zero-coupon)",
+    annualPayM:0, monthlyPayM:0,
+    statedAmt:"$2,600M", sharesDesc:null,
+    secLink:"https://www.strategy.com/financial-documents",
+    pressLink:null,
+    desc:"Zero-coupon; issued as part of 21/21 Plan accelerated capital raise.",
+  },
+  {
+    rank:5, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:2000, coupon:0.000, ytm:0.00, maturity:"Mar 1, 2030", matStr:"2030-03-01",
+    issued:"Feb 2025", conv:"$553.22", cumulative:null, payFreq:"None (zero-coupon)",
+    annualPayM:0, monthlyPayM:0,
+    statedAmt:"$2,000M", sharesDesc:null,
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000095017025025233/mstr-20250224.htm",
+    pressLink:"https://www.strategy.com/press/strategy-completes-2-billion-offering-of-convertible-senior-notes-due-2030_02-24-2025",
+    desc:"Zero-coupon; $2B raised Feb 2025. Continued BTC accumulation strategy.",
+  },
+  {
+    rank:6, name:"0.875% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:604, coupon:0.875, ytm:0.85, maturity:"Mar 1, 2031", matStr:"2031-03-01",
+    issued:"Mar 2025", conv:"~$1,100+", cumulative:null, payFreq:"Semi-annual",
+    annualPayM:5.29, monthlyPayM:0.44,
+    statedAmt:"$604M", sharesDesc:null,
+    secLink:"https://www.strategy.com/financial-documents",
+    pressLink:null,
+    desc:"Convertible notes issued Mar 2025 as Strategy continued 21/21 Plan.",
+  },
+  {
+    rank:7, name:"2.25% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:800, coupon:2.25, ytm:2.20, maturity:"Jun 15, 2032", matStr:"2032-06-15",
+    issued:"Jun 2024", conv:"$2,327.06", cumulative:null, payFreq:"Semi-annual (Jun/Dec)",
+    annualPayM:18.00, monthlyPayM:1.50,
+    statedAmt:"$800M", sharesDesc:null,
+    secLink:"https://www.strategy.com/financial-documents",
+    pressLink:null,
+    desc:"Highest coupon convertible; longest fixed maturity. Convertible at $2,327.06/share.",
+  },
+  {
+    rank:8, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Preferred Equity", cls:"b-pref", tier:3,
+    amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
+    issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
+    annualPayM:160, monthlyPayM:13.33,
+    statedAmt:"~$2.0B est.", sharesDesc:"~20M shares",
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
+    pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
+    desc:"8% fixed annual dividend; CUMULATIVE; $100 stated amount. Convertible to MSTR. IPO price $80/share.",
+  },
+  {
+    rank:9, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Preferred Equity", cls:"b-pref", tier:3,
+    amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
+    issued:"Mar 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
+    annualPayM:150, monthlyPayM:12.50,
+    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525056178/d927140d424b5.htm",
+    pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strf-perpetual-preferred-stock_03-21-2025",
+    desc:"10% fixed annual dividend; CUMULATIVE; $100 stated. IPO price $85/share. Compounded quarterly if unpaid.",
+  },
+  {
+    rank:10, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Preferred Equity", cls:"b-pref", tier:3,
+    amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
+    issued:"Jun 2025", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
+    annualPayM:150, monthlyPayM:12.50,
+    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
+    pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
+    desc:"10% fixed annual dividend; NON-CUMULATIVE — missed dividends DO NOT accumulate. $100 stated. Key risk vs. STRF.",
+  },
+  {
+    rank:11, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"Preferred Equity", cls:"b-pref", tier:3,
+    amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
+    issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
+    annualPayM:345, monthlyPayM:28.75,
+    statedAmt:"~$3.0B est.", sharesDesc:"~35M shares",
+    secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
+    pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
+    desc:"Variable rate (11.5% current as of Mar 2026, started ~9% Jul 2025) paid MONTHLY. Rate adjusts based on STRC VWAP vs $100 stated. IPO price $90/share.",
+    featured:true,
+  },
+  {
+    rank:12, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
+    amount:null, coupon:null, ytm:null, maturity:"N/A", matStr:null,
+    issued:"Jun 1998", conv:"N/A", cumulative:null, payFreq:"No dividend",
+    annualPayM:0, monthlyPayM:0,
+    statedAmt:"Market cap", sharesDesc:"~500M diluted",
+    secLink:"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=10-K",
+    pressLink:"https://www.strategy.com/financial-documents",
+    desc:"Bitcoin-leveraged equity. No dividend. Residual claim after all obligations. Trades at ~1.5–2× BTC NAV premium.",
+  },
+];
+
+/* ═══════════════════════════════════════════════
+   BTC DATA
+═══════════════════════════════════════════════ */
+const BTC_DATA = [
+  {q:"Q4'20", btc:70470,  price:29374, val:2.07},
+  {q:"Q1'21", btc:91064,  price:58918, val:5.37},
+  {q:"Q2'21", btc:105085, price:35049, val:3.68},
+  {q:"Q3'21", btc:114042, price:43790, val:4.99},
+  {q:"Q4'21", btc:124391, price:46306, val:5.76},
+  {q:"Q1'22", btc:129218, price:45521, val:5.88},
+  {q:"Q2'22", btc:129699, price:19784, val:2.57},
+  {q:"Q3'22", btc:130000, price:19431, val:2.53},
+  {q:"Q4'22", btc:132500, price:16547, val:2.19},
+  {q:"Q1'23", btc:140000, price:28478, val:3.99},
+  {q:"Q2'23", btc:152800, price:30477, val:4.66},
+  {q:"Q3'23", btc:158245, price:26959, val:4.27},
+  {q:"Q4'23", btc:189150, price:42265, val:7.99},
+  {q:"Q1'24", btc:214400, price:71285, val:15.29},
+  {q:"Q2'24", btc:226500, price:62734, val:14.21},
+  {q:"Q3'24", btc:252220, price:63301, val:15.97},
+  {q:"Q4'24", btc:446400, price:93429, val:41.70},
+  {q:"Q1'25", btc:528185, price:82500, val:43.58},
+  {q:"Q2'25", btc:576230, price:98000, val:56.47},
+  {q:"Q3'25", btc:640808, price:72000, val:46.14},
+  {q:"Q4'25", btc:706137, price:95000, val:67.08},
+  {q:"Q1'26", btc:738731, price:86000, val:63.53},
+];
+
+const DEBT_HISTORY = [
+  {year:"2020", secured:0,   conv:650,  pref:0},
+  {year:"2021", secured:0,   conv:1900, pref:0},
+  {year:"2022", secured:0,   conv:0,    pref:0},
+  {year:"2023", secured:500, conv:0,    pref:0},
+  {year:"2024", secured:0,   conv:9610, pref:0},
+  {year:"2025", secured:0,   conv:3604, pref:3000},
+];
+
+/* ── Monthly payment data ── */
+const DEBT_PAYMENTS = [
+  {name:"6.125% Secured 2028",     notional:500,  annual:30.63, monthly:2.55, freq:"Semi-annual", color:"#22c55e"},
+  {name:"0.625% Conv 2028",        notional:1010, annual:6.31,  monthly:0.53, freq:"Semi-annual", color:"#06b6d4"},
+  {name:"0% Conv notes (4 tranches)", notional:9600, annual:0, monthly:0,    freq:"Zero-coupon", color:"#4e6a96"},
+  {name:"0.875% Conv 2031",        notional:604,  annual:5.29,  monthly:0.44, freq:"Semi-annual", color:"#06b6d4"},
+  {name:"2.25% Conv 2032",         notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
+];
+const PREF_PAYMENTS = [
+  {name:"STRK — 8% fixed",    stated:"~$2.0B", annual:160, monthly:13.33, freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
+  {name:"STRF — 10% fixed",   stated:"~$1.5B", annual:150, monthly:12.50, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
+  {name:"STRD — 10% fixed",   stated:"~$1.5B", annual:150, monthly:12.50, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
+  {name:"STRC — 11.5% variable",stated:"~$3.0B", annual:345, monthly:28.75, freq:"Monthly",    cum:"Variable",      color:"#a855f7"},
+];
+
+/* ── Structure chart data (senior → junior) ── */
+const STRUCT_CHART = [
+  {name:"6.125% Secured 2028",     amt:500,  type:"Senior Secured",     fill:"#22c55e"},
+  {name:"0.625% Conv 2028",        amt:1010, type:"Convertible Note",    fill:"#06b6d4"},
+  {name:"0.875% Conv 2031",        amt:604,  type:"Convertible Note",    fill:"#06b6d4"},
+  {name:"2.25% Conv 2032",         amt:800,  type:"Convertible Note",    fill:"#06b6d4"},
+  {name:"0% Conv Mar 2030",        amt:2000, type:"Convertible Note",    fill:"#0891b2"},
+  {name:"0% Conv Feb 2030",        amt:2600, type:"Convertible Note",    fill:"#0891b2"},
+  {name:"0% Conv Dec 2029",        amt:3000, type:"Convertible Note",    fill:"#0891b2"},
+  {name:"STRK — Strike",           amt:2000, type:"Preferred Equity",    fill:"#f97316"},
+  {name:"STRF — Strife",           amt:1500, type:"Preferred Equity",    fill:"#fb923c"},
+  {name:"STRD — Stride",           amt:1500, type:"Preferred Equity",    fill:"#f59e0b"},
+  {name:"STRC — Stretch",          amt:3000, type:"Preferred Equity",    fill:"#a855f7"},
+].reverse(); // reverse so most junior at top (bottom of chart = most senior)
+
+/* ═══════════════════════════════════════════════
+   COVENANTS
+═══════════════════════════════════════════════ */
+const COVENANTS = [
+  {icon:"💰",title:"Dividend Rate & Payment Schedule",hl:false,
+   body:"STRC holders currently receive 11.5% per annum on the $100 stated liquidation preference (~$11.50/year/share as of Mar 2026, stepped up from the ~9% initial rate at issuance Jul 2025), paid MONTHLY in arrears on the last calendar day of each month. This monthly payment cadence is unique vs. STRK/STRF/STRD (quarterly)."},
+  {icon:"📈",title:"Variable Rate Mechanism",hl:true,
+   body:"Unlike STRK/STRF/STRD, the STRC dividend rate CHANGES based on the stock's 10-day volume-weighted average price (VWAP): (1) VWAP < $95 → management recommends a larger increase; (2) $95–$98.99 → smaller increase; (3) $99–$100.99 → no change; (4) ≥$101 → decrease or new follow-on offering. This creates an unusual income floor/ceiling dynamic tied to market price."},
+  {icon:"🏛️",title:"Liquidation Preference & Ranking",hl:true,
+   body:"Upon liquidation: STRC receives $100/share + all accrued dividends before MSTR common. Ranking: (i) JUNIOR to all ~$10.5B+ debt (secured and unsecured); (ii) pari passu with STRK, STRF, STRD; (iii) senior to MSTR common. BTC is pledged only to Senior Secured noteholders — STRC has NO direct lien on BTC assets."},
+  {icon:"🔄",title:"Optional Conversion (Holder Right)",hl:false,
+   body:"Each STRC share may be converted into MSTR common stock at any time at the holder's option. Conversion rate = $100 ÷ Conversion Price. Conversion price is set at issuance at a premium to MSTR's then-prevailing stock price. STRC was issued at $90/share vs $100 stated — reflecting the discount at IPO."},
+  {icon:"⚡",title:"Mandatory Conversion (Company Right)",hl:true,
+   body:"Strategy may force-convert all STRC if MSTR common trades ≥130% of the applicable conversion price for 20 of any 30 consecutive trading days. This eliminates your variable income stream. Combined with the variable rate mechanism, STRC income can be terminated via forced conversion precisely when MSTR performs best."},
+  {icon:"🔔",title:"Optional Redemption (Company Right)",hl:false,
+   body:"Strategy may redeem all (not less than all) STRC at its option after a call protection period (typically ~5 years) at $100 + accrued dividends. There is NO obligation to redeem. As a perpetual instrument with no maturity, holders depend on secondary market liquidity."},
+  {icon:"🏢",title:"Change of Control",hl:true,
+   body:"On a Change of Control (>50% voting acquisition or certain asset disposals), STRC holders may elect within 20 business days to: (a) convert at a special CoC conversion price based on the acquisition price, or (b) require Strategy to repurchase at $100 + accrued dividends."},
+  {icon:"🗳️",title:"Voting Rights",hl:false,
+   body:"No ordinary voting rights. Limited exceptions: (1) Amendments materially adversely affecting STRC rights require separate class vote; (2) Authorization of equity senior to STRC requires consent; (3) Mergers not preserving equivalent rights require consent."},
+  {icon:"👔",title:"Director Election Rights (Arrearage Trigger)",hl:true,
+   body:"If dividends in arrears for 6+ consecutive quarterly periods (18 months), STRC + STRK + STRF + STRD holders (voting together) may elect 2 additional Board directors. Note: because STRC pays monthly, this may trigger after 18 missed monthly payments."},
+  {icon:"🚫",title:"Dividend Stopper",hl:false,
+   body:"Strategy cannot declare/pay any dividend on MSTR common stock unless all accumulated and unpaid STRC dividends are fully paid and a current-period STRC dividend has been declared. This is your primary protective covenant against common stockholder preference."},
+  {icon:"🛡️",title:"Anti-Dilution Protection",hl:false,
+   body:"Conversion price adjusts for: stock splits/reverse splits; stock dividends in MSTR shares; rights/warrant issuances below market; spinoffs. Standard weighted-average anti-dilution applies for new equity issuances below the conversion price."},
+  {icon:"📋",title:"Restriction on Senior Equity Issuances",hl:true,
+   body:"Majority approval of STRC holders required to authorize equity ranking senior to STRC. However, Strategy may freely issue additional pari passu preferred (more STRK/STRF/STRD/STRC equivalents) without consent — this is a key dilution risk given the 21/21 Plan."},
+  {icon:"₿",title:"No Direct Bitcoin Claim — Critical Risk",hl:true,
+   body:"CRITICAL: STRC holders have NO direct legal claim on Strategy's Bitcoin treasury. BTC is pledged only to the Senior Secured noteholders. All $10.5B+ of debt is senior to STRC. In bankruptcy, STRC holders are near-last in the waterfall. A ~75%+ BTC price decline could render STRC effectively worthless after satisfying all senior debt."},
+  {icon:"⚠️",title:"No Sinking Fund / No Maturity",hl:false,
+   body:"No sinking fund established. Strategy has zero obligation to set aside redemption funds or repurchase STRC. There is no maturity date — this is a perpetual instrument. Exit options: (a) secondary market (may trade at discount), (b) voluntary conversion to MSTR, (c) company's discretionary redemption after call protection period."},
+];
+
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+const Tip = ({active,payload,label}) => {
+  if(!active||!payload?.length) return null;
+  return (
+    <div style={{background:"#0a1020",border:"1px solid #1d2e4a",borderRadius:8,padding:"10px 14px",fontSize:12}}>
+      <div style={{color:"#8ba3c7",fontWeight:700,marginBottom:6}}>{label}</div>
+      {payload.map((p,i)=>(
+        <div key={i} style={{color:p.color,marginBottom:2}}>
+          {p.name}: <span style={{fontFamily:"monospace"}}>{typeof p.value==="number"?p.value.toLocaleString():p.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+function TTMCell({matStr}) {
+  if(!matStr) return <span className="ttm-perp">Perpetual</span>;
+  const t = ttmStr(matStr);
+  if(!t||t==="Matured") return <span className="ttm-near">Matured</span>;
+  const cls = t.months < 30 ? "ttm-near" : t.months < 60 ? "ttm-mid" : "ttm-far";
+  return <span className={cls}>{t.label}</span>;
+}
+
+function SrcLinks({secLink,pressLink}) {
+  return (
+    <div style={{display:"flex",flexWrap:"wrap",gap:3}}>
+      {secLink && <a href={secLink} target="_blank" rel="noopener noreferrer" className="src-btn src-sec">SEC</a>}
+      {pressLink && <a href={pressLink} target="_blank" rel="noopener noreferrer" className="src-btn src-press">PR</a>}
+    </div>
+  );
+}
+
+function CumBadge({v}) {
+  if(v===true)  return <span className="cum-yes">● Cumulative</span>;
+  if(v===false) return <span className="cum-no">● Non-Cumulative</span>;
+  return <span className="cum-na">—</span>;
+}
+
+/* ═══════════════════════════════════════════════
+   DIVIDEND DATA (actual from SEC 8-K declarations)
+═══════════════════════════════════════════════ */
+const DIV_HISTORY = {
+  STRK: [
+    {exDate:"Mar 13, 2026", recDate:"Mar 15, 2026", payDate:"Mar 31, 2026", amount:2.00000, annRate:8.00},
+    {exDate:"Dec 15, 2025", recDate:"Dec 15, 2025", payDate:"Dec 31, 2025", amount:2.00000, annRate:8.00},
+    {exDate:"Sep 15, 2025", recDate:"Sep 15, 2025", payDate:"Sep 30, 2025", amount:2.00000, annRate:8.00},
+    {exDate:"Jun 13, 2025", recDate:"Jun 15, 2025", payDate:"Jun 30, 2025", amount:2.00000, annRate:8.00},
+    {exDate:"Mar 14, 2025", recDate:"Mar 15, 2025", payDate:"Mar 31, 2025", amount:1.24444, annRate:null, note:"Partial (first period)"},
+  ],
+  STRF: [
+    {exDate:"Mar 13, 2026", recDate:"Mar 15, 2026", payDate:"Mar 31, 2026", amount:2.50000, annRate:10.00},
+    {exDate:"Dec 15, 2025", recDate:"Dec 15, 2025", payDate:"Dec 31, 2025", amount:2.50000, annRate:10.00},
+    {exDate:"Sep 15, 2025", recDate:"Sep 15, 2025", payDate:"Sep 30, 2025", amount:2.50000, annRate:10.00},
+    {exDate:"Jun 13, 2025", recDate:"Jun 15, 2025", payDate:"Jun 30, 2025", amount:2.63889, annRate:null, note:"Partial (first period)"},
+  ],
+  STRD: [
+    {exDate:"Mar 13, 2026", recDate:"Mar 15, 2026", payDate:"Mar 31, 2026", amount:2.50000, annRate:10.00},
+    {exDate:"Dec 15, 2025", recDate:"Dec 15, 2025", payDate:"Dec 31, 2025", amount:2.50000, annRate:10.00},
+    {exDate:"Sep 15, 2025", recDate:"Sep 15, 2025", payDate:"Sep 30, 2025", amount:3.06000, annRate:null, note:"Partial (first period)"},
+  ],
+  STRC: [
+    {exDate:"Mar 13, 2026", recDate:"Mar 15, 2026", payDate:"Mar 31, 2026", amount:0.95833, annRate:11.50},
+    {exDate:"Feb 13, 2026", recDate:"Feb 15, 2026", payDate:"Feb 28, 2026", amount:0.93750, annRate:11.25},
+    {exDate:"Jan 15, 2026", recDate:"Jan 15, 2026", payDate:"Jan 31, 2026", amount:0.91667, annRate:11.00},
+    {exDate:"Dec 15, 2025", recDate:"Dec 15, 2025", payDate:"Dec 31, 2025", amount:0.89583, annRate:10.75},
+    {exDate:"Nov 14, 2025", recDate:"Nov 15, 2025", payDate:"Nov 30, 2025", amount:0.87500, annRate:10.50},
+    {exDate:"Oct 15, 2025", recDate:"Oct 15, 2025", payDate:"Oct 31, 2025", amount:0.85417, annRate:10.25},
+    {exDate:"Sep 15, 2025", recDate:"Sep 15, 2025", payDate:"Sep 30, 2025", amount:0.83333, annRate:10.00},
+    {exDate:"Aug 15, 2025", recDate:"Aug 15, 2025", payDate:"Aug 31, 2025", amount:0.80000, annRate:9.60},
+  ],
+};
+
+// STRC rate step-up for chart
+const STRC_RATE_CHART = DIV_HISTORY.STRC.slice().reverse().map(d=>({
+  month: d.payDate.replace(", 2025","'25").replace(", 2026","'26").replace(" 31","").replace(" 28","").replace(" 30",""),
+  rate: d.annRate,
+  amount: d.amount,
+}));
+
+/* ═══════════════════════════════════════════════
+   MAIN DASHBOARD
+═══════════════════════════════════════════════ */
+function Dashboard() {
+  const [tab, setTab] = useState("overview");
+
+  const totalDebt = INSTRUMENTS.filter(i=>i.amount).reduce((s,i)=>s+i.amount,0);
+  const totalDebtInterestAnnual = DEBT_PAYMENTS.reduce((s,p)=>s+p.annual,0);
+  const totalPrefDivAnnual = PREF_PAYMENTS.reduce((s,p)=>s+p.annual,0);
+  const totalMonthlyDebt = DEBT_PAYMENTS.reduce((s,p)=>s+p.monthly,0);
+  const totalMonthlyPref = PREF_PAYMENTS.reduce((s,p)=>s+p.monthly,0);
+  const totalMonthly = totalMonthlyDebt + totalMonthlyPref;
+
+  const TIERS = [
+    {label:"Tier 1 — Senior Secured",           color:"#22c55e", items:INSTRUMENTS.filter(i=>i.cls==="b-sec")},
+    {label:"Tier 2 — Senior Unsecured Convertible Notes", color:"#eab308", items:INSTRUMENTS.filter(i=>i.cls==="b-conv")},
+    {label:"Tier 3 — Preferred Equity",          color:"#f97316", items:INSTRUMENTS.filter(i=>i.cls==="b-pref")},
+    {label:"Tier 4 — Common Equity (Residual)",  color:"#ef4444", items:INSTRUMENTS.filter(i=>i.cls==="b-com")},
+  ];
+
+  return (
+    <div>
+      {/* ── Header ── */}
+      <div className="hdr">
+        <div className="hdr-left">
+          <div className="logo">S</div>
+          <div>
+            <div className="hdr-title">Strategy Inc. (MSTR)</div>
+            <div className="hdr-sub">Bitcoin Treasury · Capital Structure Dashboard</div>
+          </div>
+        </div>
+        <div className="hdr-right">
+          <div>Data approx. Q1 2026 · Source: SEC EDGAR</div>
+          <div>
+            <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer">strategy.com/financial-documents</a>
+            {" · "}
+            <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=&dateb=&owner=include&count=40" target="_blank" rel="noopener noreferrer">SEC EDGAR</a>
+          </div>
+        </div>
+      </div>
+
+      <div className="main">
+        {/* ── Tabs ── */}
+        <div className="tabs">
+          {["overview","capital structure","structure chart","charts","dividends","STRC covenants"].map(t=>(
+            <button key={t} className={`tab${tab===t?" active":""}`} onClick={()=>setTab(t)}>
+              {t==="STRC covenants"?"STRC Covenants":t.charAt(0).toUpperCase()+t.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* ════════════════════════════════════════
+            OVERVIEW
+        ════════════════════════════════════════ */}
+        {tab==="overview" && <>
+          <div className="sec">
+            <div className="sec-title">Key Metrics — Q1 2026</div>
+            <div className="cards">
+              <div className="card">
+                <div className="card-lbl">BTC Holdings</div>
+                <div className="card-val" style={{color:"#f97316"}}>738,731</div>
+                <div className="card-sub">≈3.5% of total BTC supply</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Avg. Cost Basis / BTC</div>
+                <div className="card-val">~$66,384</div>
+                <div className="card-sub" style={{color:"#22c55e"}}>Unrealized gain at ~$86k</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">BTC Treasury Value</div>
+                <div className="card-val" style={{color:"#22c55e"}}>~$63.5B</div>
+                <div className="card-sub">At ≈$86,000/BTC</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Total Debt (Conv. + Secured)</div>
+                <div className="card-val" style={{color:"#ef4444"}}>~$10.5B</div>
+                <div className="card-sub">$500M secured + ~$10.0B conv.</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Debt / BTC Treasury LTV</div>
+                <div className="card-val">16.6%</div>
+                <div className="card-sub">Significant buffer at current BTC price</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Total Monthly Obligation</div>
+                <div className="card-val" style={{color:"#a855f7"}}>~${totalMonthly.toFixed(1)}M</div>
+                <div className="card-sub">Interest + preferred dividends</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly payment breakdown */}
+          <div className="sec">
+            <div className="sec-title">Monthly Cash Obligations (Est.) <span style={{fontSize:10,fontWeight:400,color:"#4e6a96",textTransform:"none",letterSpacing:0}}>— interest + dividends</span></div>
+            <div className="pay-grid">
+              <div className="pay-card">
+                <div className="pay-card-title">
+                  <span style={{color:"#22c55e"}}>●</span> Debt Interest Payments
+                </div>
+                {DEBT_PAYMENTS.map(p=>(
+                  <div key={p.name} className="pay-row">
+                    <div className="pay-name">{p.name}</div>
+                    <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                      <span style={{fontSize:10,color:"#4e6a96"}}>{p.freq}</span>
+                      <span className="pay-amt" style={{color:p.monthly>0?"#22c55e":"#4e6a96"}}>
+                        {p.monthly>0?`$${p.monthly.toFixed(2)}M/mo`:"$0"}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                <div className="pay-total">
+                  <span>Total Debt Interest</span>
+                  <span style={{color:"#22c55e"}}>${totalMonthlyDebt.toFixed(2)}M/mo · ${totalDebtInterestAnnual.toFixed(1)}M/yr</span>
+                </div>
+              </div>
+              <div className="pay-card">
+                <div className="pay-card-title">
+                  <span style={{color:"#f97316"}}>●</span> Preferred Dividend Obligations
+                </div>
+                {PREF_PAYMENTS.map(p=>(
+                  <div key={p.name} className="pay-row">
+                    <div>
+                      <div className="pay-name">{p.name}</div>
+                      <div style={{fontSize:10,color:"#4e6a96"}}>{p.stated} stated · {p.freq} · {p.cum}</div>
+                    </div>
+                    <span className="pay-amt" style={{color:p.color}}>${p.monthly.toFixed(2)}M/mo</span>
+                  </div>
+                ))}
+                <div className="pay-total">
+                  <span>Total Preferred Dividends</span>
+                  <span style={{color:"#f97316"}}>${totalMonthlyPref.toFixed(2)}M/mo · ${totalPrefDivAnnual.toFixed(0)}M/yr</span>
+                </div>
+              </div>
+            </div>
+            <div style={{background:"#0e1830",border:"1px solid #274060",borderRadius:10,padding:"14px 18px",marginTop:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div>
+                <div style={{fontSize:11,color:"#4e6a96",marginBottom:4}}>TOTAL ESTIMATED MONTHLY OBLIGATION (Interest + Dividends)</div>
+                <div style={{fontSize:11,color:"#8ba3c7"}}>Note: Preferred dividends are at Board discretion (except STRD which is non-cumulative). Debt interest is contractual.</div>
+              </div>
+              <div style={{textAlign:"right",flexShrink:0,marginLeft:16}}>
+                <div style={{fontSize:26,fontWeight:800,color:"#a855f7"}}>${totalMonthly.toFixed(1)}M/mo</div>
+                <div style={{fontSize:13,color:"#8ba3c7",fontWeight:600}}>≈ ${(totalMonthly*12/1000).toFixed(2)}B/yr</div>
+              </div>
+            </div>
+            <div style={{fontSize:10,color:"#4e6a96",marginTop:8}}>
+              * Preferred dividend amounts are estimates based on approximate shares outstanding. Strategy established a $1.44B dividend/interest reserve (Dec 2025).
+              Source: <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>strategy.com/financial-documents</a>
+            </div>
+          </div>
+
+          {/* Full instrument table */}
+          <div className="sec">
+            <div className="sec-title">All Instruments — Yield, TTM & Seniority</div>
+            <div className="tbl-wrap">
+              <div className="tbl-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Instrument</th>
+                      <th>Ticker</th>
+                      <th>Type</th>
+                      <th className="tr">Notional / Stated</th>
+                      <th className="tr">Coupon</th>
+                      <th className="tr">YTM / Yield</th>
+                      <th>Maturity</th>
+                      <th>TTM</th>
+                      <th>Cumulative</th>
+                      <th>Conv. Price</th>
+                      <th>Issued</th>
+                      <th>Sources</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {INSTRUMENTS.map(item=>(
+                      <tr key={item.rank} style={item.featured?{background:"rgba(249,115,22,0.04)"}:{}}>
+                        <td><div className="rank">{item.rank}</div></td>
+                        <td>
+                          <span className="bold">{item.name}</span>
+                          {item.featured&&<span className="strc-badge">★ STRC</span>}
+                        </td>
+                        <td><span className="mono" style={{color:item.ticker!=="—"?"#06b6d4":"#4e6a96"}}>{item.ticker}</span></td>
+                        <td><span className={`badge ${item.cls}`}>{item.type}</span></td>
+                        <td className="tr mono" style={{fontSize:11}}>
+                          <div>{item.statedAmt}</div>
+                          {item.sharesDesc&&<div style={{color:"#4e6a96",fontSize:10}}>{item.sharesDesc}</div>}
+                        </td>
+                        <td className="tr mono">
+                          {item.coupon!=null?`${item.coupon.toFixed(3)}%`:item.couponLabel
+                            ?<span className="y-var">{item.couponLabel}</span>
+                            :<span className="y-na">—</span>}
+                        </td>
+                        <td className="tr">
+                          {item.ytm===null?<span className="y-na">—</span>
+                            :item.ytm===0?<span className="y-zero">0.000%</span>
+                            :item.couponLabel?<span className="y-var">{item.ytm.toFixed(2)}%~</span>
+                            :<span className="y-pos">{item.ytm.toFixed(3)}%</span>}
+                        </td>
+                        <td style={{fontSize:12}}>{item.maturity}</td>
+                        <td><TTMCell matStr={item.matStr}/></td>
+                        <td><CumBadge v={item.cumulative}/></td>
+                        <td className="mono" style={{color:item.conv&&item.conv!=="N/A"?"#a855f7":"#4e6a96",fontSize:11}}>{item.conv||"—"}</td>
+                        <td style={{color:"#4e6a96",fontSize:11}}>{item.issued}</td>
+                        <td><SrcLinks secLink={item.secLink} pressLink={item.pressLink}/></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>}
+
+        {/* ════════════════════════════════════════
+            CAPITAL STRUCTURE
+        ════════════════════════════════════════ */}
+        {tab==="capital structure" && <>
+          <div className="info-box">
+            <strong>Data Sources:</strong> All instrument terms sourced from SEC EDGAR (Form 424B5 prospectuses, 8-K filings) and
+            <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer"> strategy.com/financial-documents</a>.
+            BTC holdings from <a href="https://www.strategy.com/purchases" target="_blank" rel="noopener noreferrer">strategy.com/purchases</a>.
+            Latest 10-K: <a href="https://www.sec.gov/Archives/edgar/data/1050446/000095017025021814/mstr-20241231.htm" target="_blank" rel="noopener noreferrer">FY2024 Annual Report</a>.
+          </div>
+          <div className="sec">
+            <div className="sec-title">Seniority Waterfall — Liquidation Priority</div>
+            {TIERS.map(tier=>(
+              <div key={tier.label} className="wfall-tier"
+                style={{border:`1px solid ${tier.color}25`,borderLeft:`4px solid ${tier.color}`,background:`${tier.color}05`,marginBottom:10}}>
+                <div className="wfall-hdr" style={{borderBottom:`1px solid ${tier.color}18`,color:tier.color,background:`${tier.color}08`}}>
+                  {tier.label}
+                  <span>(receives proceeds before all lower tiers in liquidation)</span>
+                </div>
+                {tier.items.map(item=>(
+                  <div key={item.rank} className="wfall-row" style={{borderTop:`1px solid ${tier.color}10`}}>
+                    <span style={{color:"#4e6a96",fontSize:11,paddingTop:2}}>{item.rank}</span>
+                    <div>
+                      <div className="bold" style={{marginBottom:2}}>
+                        {item.name}
+                        {item.ticker!=="—"&&<span className="mono" style={{color:"#06b6d4",fontSize:11,marginLeft:8}}>{item.ticker}</span>}
+                        {item.featured&&<span className="strc-badge">★</span>}
+                      </div>
+                      <div style={{fontSize:11,color:"#8ba3c7",lineHeight:1.6,marginBottom:4}}>{item.desc}</div>
+                      <SrcLinks secLink={item.secLink} pressLink={item.pressLink}/>
+                    </div>
+                    <div><div className="wfall-lbl">Notional/Stated</div><div className="wfall-val">{item.statedAmt}</div></div>
+                    <div><div className="wfall-lbl">Coupon</div><div className="wfall-val">{item.coupon!=null?`${item.coupon}%`:item.couponLabel||"—"}</div></div>
+                    <div><div className="wfall-lbl">Yield/YTM</div><div className="wfall-val" style={{color:item.ytm?"#22c55e":"#4e6a96"}}>{item.ytm!=null?`${item.ytm.toFixed(2)}%`:"—"}</div></div>
+                    <div><div className="wfall-lbl">Cumulative</div><CumBadge v={item.cumulative}/></div>
+                    <div>
+                      <div className="wfall-lbl">Maturity / TTM</div>
+                      <div style={{fontSize:12}}>{item.maturity}</div>
+                      {item.matStr&&<TTMCell matStr={item.matStr}/>}
+                      {item.conv&&item.conv!=="N/A"&&<div style={{fontSize:11,color:"#a855f7",marginTop:2}}>Conv: {item.conv}</div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          {/* Preferred comparison */}
+          <div className="sec">
+            <div className="sec-title">Preferred Equity Comparison — STRK vs STRF vs STRD vs STRC</div>
+            <div className="pref-compare">
+              {[
+                {ticker:"STRK",name:"Strike",color:"#f97316",rate:"8.00%",type:"Fixed",cum:"Cumulative",freq:"Quarterly",issued:"Feb 2025",price:"$80 IPO",
+                 secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
+                 pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
+                 notes:"First preferred. Standard fixed-rate quarterly cumulative."},
+                {ticker:"STRF",name:"Strife",color:"#fb923c",rate:"10.00%",type:"Fixed",cum:"Cumulative",freq:"Quarterly",issued:"Mar 2025",price:"$85 IPO",
+                 secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525056178/d927140d424b5.htm",
+                 pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strf-perpetual-preferred-stock_03-21-2025",
+                 notes:"Higher rate than STRK. Compounded quarterly if unpaid."},
+                {ticker:"STRD",name:"Stride",color:"#eab308",rate:"10.00%",type:"Fixed",cum:"NON-Cumulative",freq:"Quarterly",issued:"Jun 2025",price:"~$90 IPO",
+                 secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
+                 pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
+                 notes:"Same rate as STRF but NON-cumulative — missed dividends are gone."},
+                {ticker:"STRC",name:"Stretch",color:"#a855f7",rate:"11.5%",type:"Variable",cum:"Variable",freq:"Monthly",issued:"Jul 2025",price:"$90 IPO",
+                 secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
+                 pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
+                 notes:"Unique: variable rate + monthly payments. Rate adjusts based on VWAP vs $100."},
+              ].map(p=>(
+                <div key={p.ticker} className="pref-card" style={{borderColor:`${p.color}30`,background:`${p.color}06`}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+                    <div>
+                      <div style={{fontSize:16,fontWeight:800,color:p.color}}>{p.ticker}</div>
+                      <div style={{fontSize:11,color:"#8ba3c7"}}>{p.name} Perpetual Preferred</div>
+                    </div>
+                    <div style={{textAlign:"right"}}>
+                      <div style={{fontSize:18,fontWeight:800,color:p.color}}>{p.rate}</div>
+                      <div style={{fontSize:10,color:"#4e6a96"}}>{p.type} · {p.freq}</div>
+                    </div>
+                  </div>
+                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                    {[["Cumulative",p.cum],["IPO Price",p.price],["Issued",p.issued]].map(([k,v])=>(
+                      <tr key={k} style={{borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+                        <td style={{padding:"4px 0",color:"#4e6a96",fontSize:11}}>{k}</td>
+                        <td style={{padding:"4px 0",fontSize:11,fontWeight:600,
+                          color:k==="Cumulative"&&v.includes("NON")?"#ef4444":k==="Cumulative"&&v==="Cumulative"?"#22c55e":"#e8edf7"
+                        }}>{v}</td>
+                      </tr>
+                    ))}
+                  </table>
+                  <div style={{fontSize:11,color:"#8ba3c7",marginTop:8,marginBottom:8,fontStyle:"italic"}}>{p.notes}</div>
+                  <SrcLinks secLink={p.secLink} pressLink={p.pressLink}/>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>}
+
+        {/* ════════════════════════════════════════
+            STRUCTURE CHART
+        ════════════════════════════════════════ */}
+        {tab==="structure chart" && <>
+          <div className="sec">
+            <div className="sec-title">Capital Structure — Notional by Instrument (Most Junior → Most Senior)</div>
+            <div className="chart-box" style={{padding:24}}>
+              <div className="chart-title">Notional / Stated Amount by Instrument ($M) — color by seniority tier</div>
+              <ResponsiveContainer width="100%" height={420}>
+                <BarChart layout="vertical" data={STRUCT_CHART} margin={{top:0,right:30,bottom:0,left:10}}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a" horizontal={false}/>
+                  <XAxis type="number" stroke="#4e6a96" tick={{fontSize:11}} tickFormatter={v=>`$${(v/1000).toFixed(1)}B`}/>
+                  <YAxis type="category" dataKey="name" stroke="#4e6a96" tick={{fontSize:11}} width={170}/>
+                  <Tooltip content={<Tip/>} formatter={(v)=>[`$${v.toLocaleString()}M`,""]}/>
+                  <Bar dataKey="amt" name="Notional ($M)" radius={[0,4,4,0]}>
+                    {STRUCT_CHART.map((entry,i)=>(
+                      <Cell key={i} fill={entry.fill} fillOpacity={0.85}/>
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="chart-note">
+                Preferred amounts are estimated stated amounts based on approximate shares outstanding. Debt amounts are principal.
+                Chart ordered from most junior (top) to most senior (bottom). Most senior instruments have first claim in liquidation.
+              </div>
+            </div>
+          </div>
+
+          <div className="sec">
+            <div className="sec-title">Annual Cash Obligation by Instrument ($M/year)</div>
+            <div className="chart-box" style={{padding:24}}>
+              <div className="chart-title">Interest + Dividend Obligations — Annual ($M)</div>
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart data={[
+                  ...DEBT_PAYMENTS.filter(p=>p.annual>0).map(p=>({name:p.name,amt:p.annual,type:"Debt Interest",fill:"#22c55e"})),
+                  ...PREF_PAYMENTS.map(p=>({name:p.name,amt:p.annual,type:"Preferred Dividend",fill:p.color})),
+                ]} margin={{top:0,right:20,bottom:60,left:10}}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="name" stroke="#4e6a96" tick={{fontSize:10}} angle={-30} textAnchor="end" interval={0}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:11}} tickFormatter={v=>`$${v}M`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <Bar dataKey="amt" name="Annual ($M)" radius={[4,4,0,0]}>
+                    {[...DEBT_PAYMENTS.filter(p=>p.annual>0), ...PREF_PAYMENTS].map((p,i)=>(
+                      <Cell key={i} fill={p.color} fillOpacity={0.85}/>
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              <div style={{display:"flex",gap:16,marginTop:12,flexWrap:"wrap"}}>
+                <div style={{fontSize:12,color:"#22c55e"}}>■ Debt interest (contractual)</div>
+                <div style={{fontSize:12,color:"#f97316"}}>■ Preferred dividends (Board discretion, except STRD non-cumulative)</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="sec">
+            <div className="sec-title">Debt Maturity Profile — Principal by Year ($M)</div>
+            <div className="chart-box" style={{padding:24}}>
+              <div className="chart-title">Convertible Notes Maturity Wall</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={[
+                  {year:"2028",amt:1510,label:"6.125% ($500M) + 0.625% ($1,010M)"},
+                  {year:"2029",amt:3000,label:"0% Conv ($3,000M)"},
+                  {year:"2030",amt:4600,label:"0% Conv Feb ($2,600M) + 0% Conv Mar ($2,000M)"},
+                  {year:"2031",amt:604, label:"0.875% Conv ($604M)"},
+                  {year:"2032",amt:800, label:"2.25% Conv ($800M)"},
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="year" stroke="#4e6a96" tick={{fontSize:12}}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:11}} tickFormatter={v=>`$${(v/1000).toFixed(1)}B`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <Bar dataKey="amt" name="Principal ($M)" fill="#06b6d4" fillOpacity={0.8} radius={[4,4,0,0]}>
+                    {[2028,2029,2030,2031,2032].map((_,i)=>(
+                      <Cell key={i} fill={i===2?"#ef4444":i===1?"#eab308":"#06b6d4"} fillOpacity={0.8}/>
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="chart-note">
+                Red = largest maturity wall (~$4.6B in 2030). This represents the key refinancing risk. BTC price must remain above ~$7/BTC equivalent for debt coverage — well above zero, but principal repayment requires either cash, new issuance, or conversions.
+              </div>
+            </div>
+          </div>
+        </>}
+
+        {/* ════════════════════════════════════════
+            CHARTS
+        ════════════════════════════════════════ */}
+        {tab==="charts" && <>
+          <div className="charts-grid">
+            <div className="chart-box">
+              <div className="chart-title">BTC Holdings Over Time</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={BTC_DATA}>
+                  <defs>
+                    <linearGradient id="gBtc" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.28}/>
+                      <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="q" stroke="#4e6a96" tick={{fontSize:10}} interval={3}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`${(v/1000).toFixed(0)}k`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <Area type="monotone" dataKey="btc" name="BTC Held" stroke="#f97316" fill="url(#gBtc)" strokeWidth={2} dot={false}/>
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-box">
+              <div className="chart-title">BTC Treasury Value ($B)</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <AreaChart data={BTC_DATA}>
+                  <defs>
+                    <linearGradient id="gVal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.28}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="q" stroke="#4e6a96" tick={{fontSize:10}} interval={3}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`$${v}B`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <Area type="monotone" dataKey="val" name="Value ($B)" stroke="#3b82f6" fill="url(#gVal)" strokeWidth={2} dot={false}/>
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-box">
+              <div className="chart-title">Capital Raised by Year ($M)</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={DEBT_HISTORY}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="year" stroke="#4e6a96" tick={{fontSize:11}}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`$${(v/1000).toFixed(1)}B`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <Legend wrapperStyle={{fontSize:11,color:"#8ba3c7"}}/>
+                  <Bar dataKey="secured" name="Sr. Secured" fill="#22c55e" stackId="a"/>
+                  <Bar dataKey="conv" name="Conv. Notes" fill="#06b6d4" stackId="a"/>
+                  <Bar dataKey="pref" name="Preferred Equity" fill="#f97316" stackId="a"/>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-box">
+              <div className="chart-title">BTC Price History (quarter-end)</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={BTC_DATA}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="q" stroke="#4e6a96" tick={{fontSize:10}} interval={3}/>
+                  <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`$${(v/1000).toFixed(0)}k`}/>
+                  <Tooltip content={<Tip/>}/>
+                  <ReferenceLine y={66384} stroke="#ef444460" strokeDasharray="4 4" label={{value:"Cost ~$66.4k",fill:"#ef4444",fontSize:10}}/>
+                  <Line type="monotone" dataKey="price" name="BTC Price" stroke="#06b6d4" strokeWidth={2} dot={false}/>
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </>}
+
+        {/* ════════════════════════════════════════
+            DIVIDENDS
+        ════════════════════════════════════════ */}
+        {tab==="dividends" && <>
+          <div className="sec">
+            <div className="sec-title">Next Declared Dividends — All Preferred (Q1 2026)</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:12,marginBottom:24}}>
+              {[
+                {ticker:"STRK",color:"#f97316",amount:"$2.0000",freq:"Quarterly",exDate:"Mar 13, 2026",payDate:"Mar 31, 2026",annRate:"8.00%",cum:"Cumulative"},
+                {ticker:"STRF",color:"#fb923c",amount:"$2.5000",freq:"Quarterly",exDate:"Mar 13, 2026",payDate:"Mar 31, 2026",annRate:"10.00%",cum:"Cumulative"},
+                {ticker:"STRD",color:"#eab308",amount:"$2.5000",freq:"Quarterly",exDate:"Mar 13, 2026",payDate:"Mar 31, 2026",annRate:"10.00%",cum:"Non-Cumulative"},
+                {ticker:"STRC",color:"#a855f7",amount:"$0.9583",freq:"Monthly",exDate:"Mar 13, 2026",payDate:"Mar 31, 2026",annRate:"11.50%",cum:"Variable"},
+                {ticker:"MSTR",color:"#ef4444",amount:"$0.00",freq:"None",exDate:"—",payDate:"—",annRate:"0%",cum:"No dividend"},
+              ].map(p=>(
+                <div key={p.ticker} style={{background:"var(--bg2)",border:`1px solid ${p.color}30`,borderRadius:11,padding:16}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                    <span style={{fontSize:18,fontWeight:800,color:p.color}}>{p.ticker}</span>
+                    <span style={{fontSize:22,fontWeight:800,color:p.amount==="$0.00"?"#4e6a96":p.color,fontFamily:"monospace"}}>{p.amount}</span>
+                  </div>
+                  <div style={{fontSize:11,color:"#4e6a96",marginBottom:6}}>{p.freq} · {p.annRate} ann. · {p.cum}</div>
+                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                    {[["Ex-Date",p.exDate],["Pay Date",p.payDate]].map(([k,v])=>(
+                      <tr key={k}>
+                        <td style={{padding:"3px 0",color:"#4e6a96",fontSize:11}}>{k}</td>
+                        <td style={{padding:"3px 0",fontSize:11,fontWeight:600,color:"#e8edf7",textAlign:"right"}}>{v}</td>
+                      </tr>
+                    ))}
+                  </table>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="info-box">
+            <strong>MSTR Common Stock:</strong> Has never paid a dividend and does not intend to. The <strong>dividend stopper covenant</strong> on all preferred instruments prohibits Strategy from declaring any common dividend while preferred dividends are in arrears. Sources:
+            {" "}<a href="https://www.strategy.com/strk" target="_blank" rel="noopener noreferrer">strategy.com/strk</a>
+            {" · "}<a href="https://www.strategy.com/strf" target="_blank" rel="noopener noreferrer">strategy.com/strf</a>
+            {" · "}<a href="https://stockanalysis.com/stocks/strc/dividend/" target="_blank" rel="noopener noreferrer">STRC dividend history</a>
+            {" · "}<a href="https://stockanalysis.com/stocks/strk/dividend/" target="_blank" rel="noopener noreferrer">STRK dividend history</a>
+          </div>
+
+          {/* STRC rate step-up chart */}
+          <div className="sec">
+            <div className="sec-title">STRC Variable Rate Step-Up — Monthly History</div>
+            <div className="chart-box" style={{padding:24}}>
+              <div className="chart-title">STRC Annualised Dividend Rate (%) — Monthly, Aug 2025 → Mar 2026</div>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={STRC_RATE_CHART} margin={{top:8,right:20,bottom:0,left:0}}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                  <XAxis dataKey="month" stroke="#4e6a96" tick={{fontSize:11}}/>
+                  <YAxis domain={[9,12.5]} stroke="#4e6a96" tick={{fontSize:11}} tickFormatter={v=>`${v}%`}/>
+                  <Tooltip content={<Tip/>} formatter={(v,n)=>[n==="rate"?`${v}%`:`$${v}`,n==="rate"?"Ann. Rate":"$/share/mo"]}/>
+                  <ReferenceLine y={11.5} stroke="#a855f760" strokeDasharray="4 3" label={{value:"Current 11.5%",fill:"#a855f7",fontSize:10,position:"right"}}/>
+                  <Line type="monotone" dataKey="rate" name="rate" stroke="#a855f7" strokeWidth={2} dot={{fill:"#a855f7",r:4}} activeDot={{r:6}}/>
+                </LineChart>
+              </ResponsiveContainer>
+              <div className="chart-note">Rate has stepped up every month since issuance (Aug 2025 at 9.6% → Mar 2026 at 11.5%), reflecting STRC trading below $95 VWAP — triggering the upward rate adjustment mechanism each period.</div>
+            </div>
+          </div>
+
+          {/* Dividend history tables */}
+          <div className="sec">
+            <div className="sec-title">Full Dividend Payment History — All Preferred</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+              {[
+                {ticker:"STRK",color:"#f97316",rate:"8.00% fixed",data:DIV_HISTORY.STRK},
+                {ticker:"STRF",color:"#fb923c",rate:"10.00% fixed",data:DIV_HISTORY.STRF},
+                {ticker:"STRD",color:"#eab308",rate:"10.00% fixed (non-cum.)",data:DIV_HISTORY.STRD},
+                {ticker:"STRC",color:"#a855f7",rate:"Variable (monthly)",data:DIV_HISTORY.STRC},
+              ].map(inst=>(
+                <div key={inst.ticker} style={{background:"var(--bg2)",border:`1px solid ${inst.color}25`,borderRadius:11,overflow:"hidden"}}>
+                  <div style={{background:`${inst.color}10`,borderBottom:`1px solid ${inst.color}25`,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span style={{fontSize:14,fontWeight:800,color:inst.color}}>{inst.ticker}</span>
+                    <span style={{fontSize:11,color:"#8ba3c7"}}>{inst.rate}</span>
+                  </div>
+                  <table style={{width:"100%",borderCollapse:"collapse"}}>
+                    <thead>
+                      <tr style={{background:"#070e1c"}}>
+                        {["Ex-Date","Record","Pay Date","$/Share","Ann. Rate"].map(h=>(
+                          <th key={h} style={{padding:"7px 10px",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:".06em",color:"#4e6a96",borderBottom:"1px solid #1d2e4a",textAlign:h==="$/Share"||h==="Ann. Rate"?"right":"left"}}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {inst.data.map((d,i)=>(
+                        <tr key={i} style={{borderBottom:"1px solid #1d2e4a",background:i===0?"rgba(255,255,255,0.02)":"transparent"}}>
+                          <td style={{padding:"8px 10px",fontSize:11,color:i===0?"#e8edf7":"#8ba3c7"}}>{d.exDate}{i===0&&<span style={{fontSize:9,background:inst.color+"25",color:inst.color,padding:"1px 5px",borderRadius:3,marginLeft:5}}>NEXT</span>}</td>
+                          <td style={{padding:"8px 10px",fontSize:11,color:"#8ba3c7"}}>{d.recDate}</td>
+                          <td style={{padding:"8px 10px",fontSize:11,color:"#8ba3c7"}}>{d.payDate}</td>
+                          <td style={{padding:"8px 10px",fontSize:12,fontWeight:700,color:inst.color,fontFamily:"monospace",textAlign:"right"}}>${d.amount.toFixed(5)}</td>
+                          <td style={{padding:"8px 10px",fontSize:11,textAlign:"right",color:d.annRate?"#22c55e":"#4e6a96",fontFamily:"monospace"}}>
+                            {d.annRate?`${d.annRate.toFixed(2)}%`:d.note||"—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Per-share annual summary */}
+          <div className="sec">
+            <div className="sec-title">Per-Share Dividend Summary — Current Annual Run Rate</div>
+            <div className="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ticker</th><th>Stated Amount</th><th>Frequency</th>
+                    <th className="tr">$/Share/Period</th><th className="tr">$/Share/Year</th>
+                    <th className="tr">Ann. Rate</th><th>Cumulative?</th><th>Next Pay Date</th><th>Sources</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    {ticker:"STRK",stated:"$100",freq:"Quarterly",perPeriod:"$2.0000",perYear:"$8.00",rate:"8.00%",cum:true, pay:"Mar 31, 2026",
+                     secLink:"https://www.strategy.com/strk",pressLink:"https://stockanalysis.com/stocks/strk/dividend/"},
+                    {ticker:"STRF",stated:"$100",freq:"Quarterly",perPeriod:"$2.5000",perYear:"$10.00",rate:"10.00%",cum:true, pay:"Mar 31, 2026",
+                     secLink:"https://www.strategy.com/strf",pressLink:"https://stockanalysis.com/stocks/strf/dividend/"},
+                    {ticker:"STRD",stated:"$100",freq:"Quarterly",perPeriod:"$2.5000",perYear:"$10.00",rate:"10.00%",cum:false,pay:"Mar 31, 2026",
+                     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",pressLink:"https://stockanalysis.com/stocks/strd/dividend/"},
+                    {ticker:"STRC",stated:"$100",freq:"Monthly",perPeriod:"$0.9583",perYear:"$11.50",rate:"11.50%★",cum:null,pay:"Mar 31, 2026",
+                     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",pressLink:"https://stockanalysis.com/stocks/strc/dividend/"},
+                    {ticker:"MSTR",stated:"—",freq:"None",perPeriod:"$0",perYear:"$0",rate:"0%",cum:null,pay:"N/A",
+                     secLink:"https://www.strategy.com/financial-documents",pressLink:null},
+                  ].map(r=>(
+                    <tr key={r.ticker}>
+                      <td style={{fontWeight:800,color:r.ticker==="STRC"?"#a855f7":r.ticker==="MSTR"?"#ef4444":"#f97316"}}>{r.ticker}</td>
+                      <td className="mono">{r.stated}</td>
+                      <td style={{color:"#8ba3c7"}}>{r.freq}</td>
+                      <td className="tr mono" style={{color:"#22c55e"}}>{r.perPeriod}</td>
+                      <td className="tr mono" style={{fontSize:13,fontWeight:700,color:r.perYear==="$0"?"#4e6a96":"#22c55e"}}>{r.perYear}</td>
+                      <td className="tr" style={{color:r.ticker==="STRC"?"#a855f7":r.perYear==="$0"?"#4e6a96":"#22c55e",fontWeight:700}}>{r.rate}</td>
+                      <td><CumBadge v={r.cum}/></td>
+                      <td style={{fontSize:11,color:"#8ba3c7"}}>{r.pay}</td>
+                      <td><SrcLinks secLink={r.secLink} pressLink={r.pressLink}/></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div style={{fontSize:10,color:"#4e6a96",marginTop:8}}>★ STRC rate is variable — current 11.50% as of Mar 2026, up from 9.60% at first payment (Aug 2025). Rate adjusts monthly based on 10-day VWAP vs $100 stated. Source: <a href="https://stockanalysis.com/stocks/strc/dividend/" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>stockanalysis.com</a> · <a href="https://www.sec.gov/Archives/edgar/data/1050446/000095017025080022/mstr-20250331.htm" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>SEC 8-K</a></div>
+          </div>
+        </>}
+
+        {/* ════════════════════════════════════════
+            STRC COVENANTS
+        ════════════════════════════════════════ */}
+        {tab==="STRC covenants" && <>
+          <div className="strc-hdr">
+            <div className="strc-logo">S</div>
+            <div>
+              <div style={{fontSize:17,fontWeight:800,marginBottom:4}}>STRC — Stretch Perpetual Preferred Stock</div>
+              <div style={{fontSize:12,color:"#8ba3c7"}}>Strategy, Inc. · Ticker: STRC · Variable Rate (11.5% current · started ~9% Jul 2025) · Monthly Payments · Perpetual</div>
+              <div style={{fontSize:11,color:"#8ba3c7",marginTop:5}}>
+                <span style={{color:"#ef4444",fontWeight:700}}>Junior to all ~$10.5B debt</span>
+                &nbsp;·&nbsp;Pari passu with STRK/STRF/STRD
+                &nbsp;·&nbsp;Senior to MSTR common
+                &nbsp;·&nbsp;Rank: <span style={{color:"#f97316",fontWeight:700}}>11 of 12</span>
+              </div>
+              <div style={{marginTop:8,display:"flex",gap:6}}>
+                <a href="https://www.stifel.com/prospectusfiles/PD_7153.pdf" target="_blank" rel="noopener noreferrer" className="src-btn src-sec">Prospectus (PDF)</a>
+                <a href="https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025" target="_blank" rel="noopener noreferrer" className="src-btn src-press">Press Release</a>
+                <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer" className="src-btn src-web">SEC Filings</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="alert">
+            <strong>⚠️ Investor Disclosure:</strong> STRC is a perpetual preferred equity instrument — NOT debt. No guaranteed maturity. Variable rate tied to market price. All STRC holders rank behind $10.5B+ in senior debt in any liquidation. The variable rate mechanism means your income stream can decrease if STRC trades above $101. Review the full Prospectus Supplement and SEC filings before investing.
+          </div>
+
+          <div className="sec">
+            <div className="sec-title">Key Terms at a Glance</div>
+            <div className="kt-grid">
+              {[
+                {lbl:"Current Dividend Rate",val:"11.5% p.a.",c:"#22c55e"},
+                {lbl:"Rate Type",val:"Variable (VWAP-linked)",c:"#a855f7"},
+                {lbl:"Payment Frequency",val:"Monthly",c:"#3b82f6"},
+                {lbl:"Liquidation Preference",val:"$100 per share",c:"#06b6d4"},
+                {lbl:"IPO Offering Price",val:"$90 per share",c:"#8ba3c7"},
+                {lbl:"Term / Maturity",val:"Perpetual",c:"#eab308"},
+                {lbl:"Convertible into",val:"MSTR Common",c:"#a855f7"},
+                {lbl:"Seniority Rank",val:"#11 of 12",c:"#f97316"},
+                {lbl:"Junior to Debt",val:"All ~$10.5B",c:"#ef4444"},
+                {lbl:"vs. STRF/STRK",val:"Pari Passu",c:"#8ba3c7"},
+              ].map(k=>(
+                <div key={k.lbl} className="kt-card">
+                  <div className="kt-lbl">{k.lbl}</div>
+                  <div className="kt-val" style={{color:k.c}}>{k.val}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="sec">
+            <div className="sec-title">Covenants & Key Terms (14 items)</div>
+            <div className="cov-grid">
+              {COVENANTS.map(c=>(
+                <div key={c.title} className={`cov-card${c.hl?" hl":""}`}>
+                  <div className="cov-ttl">
+                    <span>{c.icon}</span>{c.title}
+                    {c.hl&&<span className="cov-key">KEY</span>}
+                  </div>
+                  <div className="cov-body">{c.body}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="sec">
+            <div className="sec-title">Key Investment Risks</div>
+            {[
+              {t:"Bitcoin Price Risk (Primary)",b:"Strategy's equity value rests entirely on Bitcoin. A ~75%+ BTC decline could render the company insolvent. After satisfying $10.5B+ of senior debt, there may be nothing left for STRC holders. Unlike secured noteholders, STRC has zero direct lien on BTC assets."},
+              {t:"Variable Rate Risk — Income Can Decrease",b:"Unlike STRK/STRF/STRD (fixed rate), STRC's rate is variable and can be CUT if STRC VWAP ≥$101. Management can recommend lower rates when the stock performs well. There is no floor on how low the rate can go (subject to prospectus minimums, if any)."},
+              {t:"Mandatory Conversion — Income Elimination",b:"If MSTR rises ≥130% of conversion price for 20/30 days, Strategy force-converts STRC to MSTR common. Your variable monthly income stream is permanently eliminated. You receive equity with no dividend."},
+              {t:"Deep Subordination — $10.5B+ Senior",b:"Every single dollar of debt ranks senior to STRC. In any restructuring or Chapter 11, STRC holders are near last. The margin of safety narrows quickly in a bear market for BTC."},
+              {t:"Non-Maturity / Liquidity Risk",b:"No maturity date. Strategy has no obligation to ever redeem. Exit options are limited to: secondary market (may trade at discount) or voluntary conversion to MSTR (which itself is volatile)."},
+              {t:"Dilution Risk from More Preferred Issuances",b:"Strategy can issue more STRC or other pari passu preferred without STRC holder consent. Given the 21/21 Plan and beyond, continued capital markets activity will expand the preferred share base, diluting dividend capacity across more shares."},
+            ].map(r=>(
+              <div key={r.t} className="risk-item">
+                <div className="risk-ttl">⚡ {r.t}</div>
+                <div className="risk-body">{r.b}</div>
+              </div>
+            ))}
+          </div>
+        </>}
+
+        <div className="disclaim">
+          <strong>Disclaimer:</strong> For informational purposes only. Not investment advice.
+          Data approximate as of Q1 2026 based on SEC filings, 8-K reports, and prospectuses.
+          Preferred share counts are estimates; actual outstanding amounts vary with ATM programs.
+          Monthly payment estimates use approximate stated amounts — refer to official filings for precision.
+          Yields and prices change daily.
+          Sources: <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>strategy.com/financial-documents</a> ·
+          <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}> SEC EDGAR (CIK 1050446)</a> ·
+          <a href="https://www.strategy.com/purchases" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}> strategy.com/purchases</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Dashboard/>);
+</script>
+</body>
+</html>
