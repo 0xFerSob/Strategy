@@ -213,46 +213,49 @@ const INSTRUMENTS = [
     pressLink:null,
     desc:"Highest coupon convertible; longest fixed maturity. Convertible at $2,327.06/share.",
   },
+  // ── Tier 3A: MOST SENIOR PREFERRED ──
   {
-    rank:8, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Preferred Equity", cls:"b-pref", tier:3,
-    amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
-    issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
-    annualPayM:160, monthlyPayM:13.33,
-    statedAmt:"~$2.0B est.", sharesDesc:"~20M shares",
-    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
-    pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
-    desc:"8% fixed annual dividend; CUMULATIVE; $100 stated amount. Convertible to MSTR. IPO price $80/share.",
-  },
-  {
-    rank:9, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Preferred Equity", cls:"b-pref", tier:3,
+    rank:8, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Senior Preferred", cls:"b-pref", tier:"3A",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"Mar 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
     annualPayM:150, monthlyPayM:12.50,
     statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525056178/d927140d424b5.htm",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strf-perpetual-preferred-stock_03-21-2025",
-    desc:"10% fixed annual dividend; CUMULATIVE; $100 stated. IPO price $85/share. Compounded quarterly if unpaid.",
+    desc:"MOST SENIOR PREFERRED. 10% fixed; CUMULATIVE; $100 stated. IPO $85/share. Senior to STRC, STRK, STRD in liquidation. Compounded quarterly if unpaid.",
   },
+  // ── Tier 3B: SECOND-TIER PREFERRED ──
   {
-    rank:10, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Preferred Equity", cls:"b-pref", tier:3,
-    amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
-    issued:"Jun 2025", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
-    annualPayM:150, monthlyPayM:12.50,
-    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
-    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
-    pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
-    desc:"10% fixed annual dividend; NON-CUMULATIVE — missed dividends DO NOT accumulate. $100 stated. Key risk vs. STRF.",
-  },
-  {
-    rank:11, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"Preferred Equity", cls:"b-pref", tier:3,
+    rank:9, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
     annualPayM:577.8, monthlyPayM:48.15,
     statedAmt:"$5.02B stated / $4.74B raised", sharesDesc:"50,246,513 shares",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
-    desc:"Variable rate (11.5% current as of Mar 2026, started ~9% Jul 2025) paid MONTHLY. Rate adjusts based on STRC VWAP vs $100 stated. IPO price $90/share.",
+    desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
     featured:true,
+  },
+  // ── Tier 3C: JUNIOR PREFERRED ──
+  {
+    rank:10, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Junior Preferred", cls:"b-pref", tier:"3C",
+    amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
+    issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
+    annualPayM:160, monthlyPayM:13.33,
+    statedAmt:"~$2.0B est.", sharesDesc:"~20M shares",
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
+    pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
+    desc:"JUNIOR PREFERRED. 8% fixed; CUMULATIVE; $100 stated. IPO $80/share. Junior to STRF and STRC in liquidation. Senior to STRD and common only.",
+  },
+  {
+    rank:11, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Junior Preferred", cls:"b-pref", tier:"3C",
+    amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
+    issued:"Jun 2025", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
+    annualPayM:150, monthlyPayM:12.50,
+    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
+    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
+    pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
+    desc:"MOST JUNIOR PREFERRED. 10% fixed; NON-CUMULATIVE — missed dividends lost permanently. Junior to STRF, STRC, STRK. Senior to common only. Explains persistent discount to par.",
   },
   {
     rank:12, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
@@ -327,10 +330,10 @@ const STRUCT_CHART = [
   {name:"0% Conv Mar 2030",        amt:2000, type:"Convertible Note",    fill:"#0891b2"},
   {name:"0% Conv Feb 2030",        amt:2600, type:"Convertible Note",    fill:"#0891b2"},
   {name:"0% Conv Dec 2029",        amt:3000, type:"Convertible Note",    fill:"#0891b2"},
-  {name:"STRK — Strike",           amt:2000, type:"Preferred Equity",    fill:"#f97316"},
-  {name:"STRF — Strife",           amt:1500, type:"Preferred Equity",    fill:"#fb923c"},
-  {name:"STRD — Stride",           amt:1500, type:"Preferred Equity",    fill:"#f59e0b"},
-  {name:"STRC — Stretch",          amt:5020, type:"Preferred Equity",    fill:"#a855f7"},
+  {name:"STRF — Strife (Senior Pref)",      amt:1500, type:"Preferred Equity",    fill:"#fb923c"},
+  {name:"STRC — Stretch (2nd-Tier Pref)",   amt:5020, type:"Preferred Equity",    fill:"#a855f7"},
+  {name:"STRK — Strike (Junior Pref)",      amt:2000, type:"Preferred Equity",    fill:"#f97316"},
+  {name:"STRD — Stride (Junior Pref)",      amt:1500, type:"Preferred Equity",    fill:"#f59e0b"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
 
 /* ═══════════════════════════════════════════════
@@ -342,7 +345,7 @@ const COVENANTS = [
   {icon:"📈",title:"Variable Rate Mechanism",hl:true,
    body:"Unlike STRK/STRF/STRD, the STRC dividend rate CHANGES based on the stock's 10-day volume-weighted average price (VWAP): (1) VWAP < $95 → management recommends a larger increase; (2) $95–$98.99 → smaller increase; (3) $99–$100.99 → no change; (4) ≥$101 → decrease or new follow-on offering. This creates an unusual income floor/ceiling dynamic tied to market price."},
   {icon:"🏛️",title:"Liquidation Preference & Ranking",hl:true,
-   body:"Upon liquidation: STRC receives $100/share + all accrued dividends before MSTR common. Ranking: (i) JUNIOR to all ~$10.5B+ debt (secured and unsecured); (ii) pari passu with STRK, STRF, STRD; (iii) senior to MSTR common. BTC is pledged only to Senior Secured noteholders — STRC has NO direct lien on BTC assets."},
+   body:"Upon liquidation: STRC receives $100/share + all accrued dividends before MSTR common. Ranking: (i) JUNIOR to all ~$10.5B+ debt (secured and unsecured); (ii) JUNIOR to STRF (most senior preferred); (iii) SENIOR to STRK and STRD (junior preferred); (iv) senior to MSTR common. BTC is pledged only to Senior Secured noteholders — STRC has NO direct lien on BTC assets."},
   {icon:"🔄",title:"Optional Conversion (Holder Right)",hl:false,
    body:"Each STRC share may be converted into MSTR common stock at any time at the holder's option. Conversion rate = $100 ÷ Conversion Price. Conversion price is set at issuance at a premium to MSTR's then-prevailing stock price. STRC was issued at $90/share vs $100 stated — reflecting the discount at IPO."},
   {icon:"⚡",title:"Mandatory Conversion (Company Right)",hl:true,
@@ -360,7 +363,7 @@ const COVENANTS = [
   {icon:"🛡️",title:"Anti-Dilution Protection",hl:false,
    body:"Conversion price adjusts for: stock splits/reverse splits; stock dividends in MSTR shares; rights/warrant issuances below market; spinoffs. Standard weighted-average anti-dilution applies for new equity issuances below the conversion price."},
   {icon:"📋",title:"Restriction on Senior Equity Issuances",hl:true,
-   body:"Majority approval of STRC holders required to authorize equity ranking senior to STRC. However, Strategy may freely issue additional pari passu preferred (more STRK/STRF/STRD/STRC equivalents) without consent — this is a key dilution risk given the 21/21 Plan."},
+   body:"Majority approval of STRC holders required to authorize equity ranking senior to STRC (such as a new class above STRF). However, Strategy may freely issue additional STRK or STRD (junior preferred) and may issue more STRC or STRF equivalents without STRC consent — this is a key dilution risk given the 21/21 Plan."},
   {icon:"₿",title:"No Direct Bitcoin Claim — Critical Risk",hl:true,
    body:"CRITICAL: STRC holders have NO direct legal claim on Strategy's Bitcoin treasury. BTC is pledged only to the Senior Secured noteholders. All $10.5B+ of debt is senior to STRC. In bankruptcy, STRC holders are near-last in the waterfall. A ~75%+ BTC price decline could render STRC effectively worthless after satisfying all senior debt."},
   {icon:"⚠️",title:"No Sinking Fund / No Maturity",hl:false,
@@ -510,12 +513,47 @@ function Dashboard() {
   const [tab, setTab] = useState("overview");
   const [btcPrice, setBtcPrice] = useState(null);
   const [btcLoading, setBtcLoading] = useState(true);
+  const [livePrices, setLivePrices] = useState({});
+  const [pricesLoading, setPricesLoading] = useState(true);
 
+  /* ── Live BTC price ── */
   useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true")
       .then(r => r.json())
       .then(d => { setBtcPrice(d.bitcoin); setBtcLoading(false); })
       .catch(() => { setBtcPrice({usd:86000, usd_24h_change:0}); setBtcLoading(false); });
+  }, []);
+
+  /* ── Daily price history from Yahoo Finance (via CORS proxy) ── */
+  useEffect(() => {
+    const TICKERS = ['MSTR','STRK','STRF','STRD','STRC'];
+    const BASE = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    const fetchTicker = async (ticker) => {
+      const yurl = `${BASE}${ticker}?interval=1d&range=2y&includePrePost=false`;
+      const res = await fetch(`${PROXY}${encodeURIComponent(yurl)}`);
+      const json = await res.json();
+      const r = json.chart.result[0];
+      const ts = r.timestamp;
+      const closes = r.indicators.quote[0].close;
+      return ts.map((t, i) => ({
+        date: new Date(t * 1000).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'2-digit'}),
+        p: closes[i] != null ? +closes[i].toFixed(2) : null,
+      })).filter(d => d.p != null);
+    };
+
+    Promise.allSettled(TICKERS.map(t => fetchTicker(t).then(data => ({t, data}))))
+      .then(results => {
+        const acc = {};
+        results.forEach(r => {
+          if (r.status === 'fulfilled' && r.value.data.length > 0) {
+            acc[r.value.t] = r.value.data;
+          }
+        });
+        setLivePrices(acc);
+        setPricesLoading(false);
+      });
   }, []);
 
   const btcSpot   = btcPrice ? btcPrice.usd : null;
@@ -531,10 +569,12 @@ function Dashboard() {
   const totalMonthly = totalMonthlyDebt + totalMonthlyPref;
 
   const TIERS = [
-    {label:"Tier 1 — Senior Secured",           color:"#22c55e", items:INSTRUMENTS.filter(i=>i.cls==="b-sec")},
-    {label:"Tier 2 — Senior Unsecured Convertible Notes", color:"#eab308", items:INSTRUMENTS.filter(i=>i.cls==="b-conv")},
-    {label:"Tier 3 — Preferred Equity",          color:"#f97316", items:INSTRUMENTS.filter(i=>i.cls==="b-pref")},
-    {label:"Tier 4 — Common Equity (Residual)",  color:"#ef4444", items:INSTRUMENTS.filter(i=>i.cls==="b-com")},
+    {label:"Tier 1 — Senior Secured",                           color:"#22c55e", items:INSTRUMENTS.filter(i=>i.tier===1)},
+    {label:"Tier 2 — Senior Unsecured Convertible Notes",       color:"#06b6d4", items:INSTRUMENTS.filter(i=>i.tier===2)},
+    {label:"Tier 3A — Most Senior Preferred (STRF)",            color:"#fb923c", items:INSTRUMENTS.filter(i=>i.tier==="3A")},
+    {label:"Tier 3B — Second-Tier Preferred (STRC)",            color:"#a855f7", items:INSTRUMENTS.filter(i=>i.tier==="3B")},
+    {label:"Tier 3C — Junior Preferred (STRK, STRD)",           color:"#f97316", items:INSTRUMENTS.filter(i=>i.tier==="3C")},
+    {label:"Tier 4 — Common Equity — Residual (MSTR)",          color:"#ef4444", items:INSTRUMENTS.filter(i=>i.tier===4)},
   ];
 
   return (
@@ -1208,111 +1248,146 @@ function Dashboard() {
 
           {/* ── Price history charts ── */}
           <div className="sec">
-            <div className="sec-title">Price History — All Traded Instruments (Approx. Monthly Close)</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
-
-              {/* MSTR */}
-              <div className="chart-box">
-                <div className="chart-title" style={{color:"#ef4444"}}>MSTR — Common Stock</div>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={PRICE_HISTORY.MSTR} margin={{top:4,right:8,bottom:0,left:0}}>
-                    <defs><linearGradient id="gMSTR" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
-                    </linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
-                    <XAxis dataKey="m" stroke="#4e6a96" tick={{fontSize:9}} interval={2}/>
-                    <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
-                    <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
-                    <Area type="monotone" dataKey="p" name="MSTR" stroke="#ef4444" fill="url(#gMSTR)" strokeWidth={2} dot={false}/>
-                  </AreaChart>
-                </ResponsiveContainer>
-                <div className="chart-note">Current $148.63 · No dividend · Trades at ~1.7× BTC NAV</div>
-              </div>
-
-              {/* STRC */}
-              <div className="chart-box">
-                <div className="chart-title" style={{color:"#a855f7"}}>STRC — Stretch Preferred (Variable Rate)</div>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={PRICE_HISTORY.STRC} margin={{top:4,right:8,bottom:0,left:0}}>
-                    <defs><linearGradient id="gSTRC" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
-                    </linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
-                    <XAxis dataKey="m" stroke="#4e6a96" tick={{fontSize:9}}/>
-                    <YAxis stroke="#4e6a96" tick={{fontSize:9}} domain={[88,102]} tickFormatter={v=>`$${v}`}/>
-                    <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
-                    <ReferenceLine y={100} stroke="#a855f760" strokeDasharray="4 3" label={{value:"Par $100",fill:"#a855f7",fontSize:9}}/>
-                    <Area type="monotone" dataKey="p" name="STRC" stroke="#a855f7" fill="url(#gSTRC)" strokeWidth={2} dot={false}/>
-                  </AreaChart>
-                </ResponsiveContainer>
-                <div className="chart-note">Current $99.83 · 11.5% yield · 50.25M shares · Approaching par as rate steps up</div>
-              </div>
-
-              {/* STRF */}
-              <div className="chart-box">
-                <div className="chart-title" style={{color:"#fb923c"}}>STRF — Strife Preferred (10% Fixed, Cumulative)</div>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={PRICE_HISTORY.STRF} margin={{top:4,right:8,bottom:0,left:0}}>
-                    <defs><linearGradient id="gSTRF" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#fb923c" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#fb923c" stopOpacity={0}/>
-                    </linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
-                    <XAxis dataKey="m" stroke="#4e6a96" tick={{fontSize:9}} interval={2}/>
-                    <YAxis stroke="#4e6a96" tick={{fontSize:9}} domain={[80,130]} tickFormatter={v=>`$${v}`}/>
-                    <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
-                    <ReferenceLine y={100} stroke="#fb923c60" strokeDasharray="4 3" label={{value:"Par $100",fill:"#fb923c",fontSize:9}}/>
-                    <Area type="monotone" dataKey="p" name="STRF" stroke="#fb923c" fill="url(#gSTRF)" strokeWidth={2} dot={false}/>
-                  </AreaChart>
-                </ResponsiveContainer>
-                <div className="chart-note">Current $100.00 · 10.0% yield at par · 52w range $85–$127.80 · Cumulative</div>
-              </div>
-
-              {/* STRK */}
-              <div className="chart-box">
-                <div className="chart-title" style={{color:"#f97316"}}>STRK — Strike Preferred (8% Fixed, Cumulative)</div>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={PRICE_HISTORY.STRK} margin={{top:4,right:8,bottom:0,left:0}}>
-                    <defs><linearGradient id="gSTRK" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
-                    </linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
-                    <XAxis dataKey="m" stroke="#4e6a96" tick={{fontSize:9}} interval={2}/>
-                    <YAxis stroke="#4e6a96" tick={{fontSize:9}} domain={[60,105]} tickFormatter={v=>`$${v}`}/>
-                    <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
-                    <ReferenceLine y={100} stroke="#f9731660" strokeDasharray="4 3" label={{value:"Par $100",fill:"#f97316",fontSize:9}}/>
-                    <Area type="monotone" dataKey="p" name="STRK" stroke="#f97316" fill="url(#gSTRK)" strokeWidth={2} dot={false}/>
-                  </AreaChart>
-                </ResponsiveContainer>
-                <div className="chart-note">Current $78.34 · 10.21% current yield · 22% below par · Cumulative</div>
-              </div>
-
-              {/* STRD */}
-              <div className="chart-box" style={{gridColumn:"1 / -1"}}>
-                <div className="chart-title" style={{color:"#eab308"}}>STRD — Stride Preferred (10% Fixed, NON-Cumulative) — Largest Discount to Par</div>
-                <ResponsiveContainer width="100%" height={180}>
-                  <AreaChart data={PRICE_HISTORY.STRD} margin={{top:4,right:8,bottom:0,left:0}}>
-                    <defs><linearGradient id="gSTRD" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#eab308" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#eab308" stopOpacity={0}/>
-                    </linearGradient></defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
-                    <XAxis dataKey="m" stroke="#4e6a96" tick={{fontSize:10}} interval={0}/>
-                    <YAxis stroke="#4e6a96" tick={{fontSize:10}} domain={[60,100]} tickFormatter={v=>`$${v}`}/>
-                    <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
-                    <ReferenceLine y={100} stroke="#eab30860" strokeDasharray="4 3" label={{value:"Par $100",fill:"#eab308",fontSize:9}}/>
-                    <Area type="monotone" dataKey="p" name="STRD" stroke="#eab308" fill="url(#gSTRD)" strokeWidth={2} dot={false}/>
-                  </AreaChart>
-                </ResponsiveContainer>
-                <div className="chart-note">
-                  Current $76.92 · <strong style={{color:"#eab308"}}>13.00% current yield</strong> · 23.1% below par · Persistent discount vs STRF (same 10% rate) reflects NON-CUMULATIVE risk — missed dividends are permanently lost. 52w range $64.17–$96.81.
-                </div>
-              </div>
+            <div className="sec-title">
+              Daily Price History — All Traded Instruments
+              <span style={{fontSize:10,fontWeight:400,color:"#06b6d4",textTransform:"none",letterSpacing:0,marginLeft:6}}>
+                {pricesLoading ? "● fetching live data…" : "● live · Yahoo Finance · 2yr daily"}
+              </span>
             </div>
-            <div style={{fontSize:10,color:"#4e6a96",marginTop:4}}>* Price history is approximate monthly indicative data. For intraday live prices use TradingView or investing.com links above.</div>
+
+            {pricesLoading && (
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+                {['MSTR','STRC','STRF','STRK','STRD'].map(t=>(
+                  <div key={t} className="chart-box" style={{height:220,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontSize:13,color:"#06b6d4",marginBottom:6}}>Loading {t}…</div>
+                      <div style={{fontSize:11,color:"#4e6a96"}}>Fetching daily prices from Yahoo Finance</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!pricesLoading && (() => {
+              const D = (t) => livePrices[t] || PRICE_HISTORY[t].map(x=>({date:x.m, p:x.p}));
+              const xInt = (t) => Math.max(1, Math.floor(D(t).length / 12));
+              const isLive = (t) => !!livePrices[t];
+              const srcTag = (t) => isLive(t)
+                ? <span style={{fontSize:9,color:"#06b6d4",marginLeft:6}}>● live daily</span>
+                : <span style={{fontSize:9,color:"#eab308",marginLeft:6}}>⚠ indicative monthly (fallback)</span>;
+
+              return (
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
+
+                  {/* MSTR */}
+                  <div className="chart-box">
+                    <div className="chart-title" style={{color:"#ef4444"}}>MSTR — Common Stock {srcTag('MSTR')}</div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={D('MSTR')} margin={{top:4,right:8,bottom:0,left:0}}>
+                        <defs><linearGradient id="gMSTR" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                        </linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="date" stroke="#4e6a96" tick={{fontSize:8}} interval={xInt('MSTR')}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
+                        <Area type="monotone" dataKey="p" name="MSTR" stroke="#ef4444" fill="url(#gMSTR)" strokeWidth={1.5} dot={false}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">No dividend · Trades at ~1.7× BTC NAV · {D('MSTR').length} daily data points</div>
+                  </div>
+
+                  {/* STRC */}
+                  <div className="chart-box">
+                    <div className="chart-title" style={{color:"#a855f7"}}>STRC — Stretch Preferred (11.5% Variable) {srcTag('STRC')}</div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={D('STRC')} margin={{top:4,right:8,bottom:0,left:0}}>
+                        <defs><linearGradient id="gSTRC" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#a855f7" stopOpacity={0}/>
+                        </linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="date" stroke="#4e6a96" tick={{fontSize:8}} interval={xInt('STRC')}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
+                        <ReferenceLine y={100} stroke="#a855f760" strokeDasharray="4 3" label={{value:"Par $100",fill:"#a855f7",fontSize:9}}/>
+                        <Area type="monotone" dataKey="p" name="STRC" stroke="#a855f7" fill="url(#gSTRC)" strokeWidth={1.5} dot={false}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">50,246,513 shares · $4.74B raised · Monthly dividends · {D('STRC').length} daily data points</div>
+                  </div>
+
+                  {/* STRF */}
+                  <div className="chart-box">
+                    <div className="chart-title" style={{color:"#fb923c"}}>STRF — Strife Preferred (10% Fixed, Cumulative) {srcTag('STRF')}</div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={D('STRF')} margin={{top:4,right:8,bottom:0,left:0}}>
+                        <defs><linearGradient id="gSTRF" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#fb923c" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#fb923c" stopOpacity={0}/>
+                        </linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="date" stroke="#4e6a96" tick={{fontSize:8}} interval={xInt('STRF')}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
+                        <ReferenceLine y={100} stroke="#fb923c60" strokeDasharray="4 3" label={{value:"Par $100",fill:"#fb923c",fontSize:9}}/>
+                        <Area type="monotone" dataKey="p" name="STRF" stroke="#fb923c" fill="url(#gSTRF)" strokeWidth={1.5} dot={false}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">10.0% yield · Quarterly cumulative · 52w $85–$127.80 · {D('STRF').length} daily data points</div>
+                  </div>
+
+                  {/* STRK */}
+                  <div className="chart-box">
+                    <div className="chart-title" style={{color:"#f97316"}}>STRK — Strike Preferred (8% Fixed, Cumulative) {srcTag('STRK')}</div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={D('STRK')} margin={{top:4,right:8,bottom:0,left:0}}>
+                        <defs><linearGradient id="gSTRK" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                        </linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="date" stroke="#4e6a96" tick={{fontSize:8}} interval={xInt('STRK')}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
+                        <ReferenceLine y={100} stroke="#f9731660" strokeDasharray="4 3" label={{value:"Par $100",fill:"#f97316",fontSize:9}}/>
+                        <Area type="monotone" dataKey="p" name="STRK" stroke="#f97316" fill="url(#gSTRK)" strokeWidth={1.5} dot={false}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">10.21% current yield · 22% below par · Quarterly cumulative · {D('STRK').length} daily data points</div>
+                  </div>
+
+                  {/* STRD */}
+                  <div className="chart-box" style={{gridColumn:"1 / -1"}}>
+                    <div className="chart-title" style={{color:"#eab308"}}>STRD — Stride Preferred (10% Fixed, NON-Cumulative) — Largest Discount to Par {srcTag('STRD')}</div>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <AreaChart data={D('STRD')} margin={{top:4,right:8,bottom:0,left:0}}>
+                        <defs><linearGradient id="gSTRD" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#eab308" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#eab308" stopOpacity={0}/>
+                        </linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="date" stroke="#4e6a96" tick={{fontSize:8}} interval={xInt('STRD')}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:9}} tickFormatter={v=>`$${v}`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}`,"Price"]}/>
+                        <ReferenceLine y={100} stroke="#eab30860" strokeDasharray="4 3" label={{value:"Par $100",fill:"#eab308",fontSize:9}}/>
+                        <Area type="monotone" dataKey="p" name="STRD" stroke="#eab308" fill="url(#gSTRD)" strokeWidth={1.5} dot={false}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">
+                      <strong style={{color:"#eab308"}}>13.00% current yield</strong> · 23.1% below par ·
+                      Persistent discount vs STRF (same 10% rate) reflects NON-CUMULATIVE risk — missed dividends lost permanently. 52w $64.17–$96.81 · {D('STRD').length} daily data points
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+            <div style={{fontSize:10,color:"#4e6a96",marginTop:6}}>
+              Live data via Yahoo Finance (2yr daily). Tooltip shows exact daily close on hover.
+              Source: <a href="https://finance.yahoo.com/quote/MSTR" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>Yahoo Finance</a>
+              {" · "}If data fails to load, charts fall back to indicative monthly closes.
+            </div>
           </div>
 
           {/* ── Convertible note pricing ── */}
@@ -1429,7 +1504,7 @@ function Dashboard() {
               <div style={{fontSize:12,color:"#8ba3c7"}}>Strategy, Inc. · Ticker: STRC · Variable Rate (11.5% current · started ~9% Jul 2025) · Monthly Payments · Perpetual</div>
               <div style={{fontSize:11,color:"#8ba3c7",marginTop:5}}>
                 <span style={{color:"#ef4444",fontWeight:700}}>Junior to all ~$10.5B debt</span>
-                &nbsp;·&nbsp;Pari passu with STRK/STRF/STRD
+                &nbsp;·&nbsp;<span style={{color:"#fb923c"}}>Junior to STRF</span>&nbsp;·&nbsp;<span style={{color:"#22c55e"}}>Senior to STRK/STRD</span>
                 &nbsp;·&nbsp;Senior to MSTR common
                 &nbsp;·&nbsp;Rank: <span style={{color:"#f97316",fontWeight:700}}>11 of 12</span>
               </div>
@@ -1491,7 +1566,7 @@ function Dashboard() {
               {t:"Mandatory Conversion — Income Elimination",b:"If MSTR rises ≥130% of conversion price for 20/30 days, Strategy force-converts STRC to MSTR common. Your variable monthly income stream is permanently eliminated. You receive equity with no dividend."},
               {t:"Deep Subordination — $10.5B+ Senior",b:"Every single dollar of debt ranks senior to STRC. In any restructuring or Chapter 11, STRC holders are near last. The margin of safety narrows quickly in a bear market for BTC."},
               {t:"Non-Maturity / Liquidity Risk",b:"No maturity date. Strategy has no obligation to ever redeem. Exit options are limited to: secondary market (may trade at discount) or voluntary conversion to MSTR (which itself is volatile)."},
-              {t:"Dilution Risk from More Preferred Issuances",b:"Strategy can issue more STRC or other pari passu preferred without STRC holder consent. Given the 21/21 Plan and beyond, continued capital markets activity will expand the preferred share base, diluting dividend capacity across more shares."},
+              {t:"Dilution Risk from More Preferred Issuances",b:"Strategy can issue more STRK/STRD (junior to STRC) without STRC consent. New issuances senior to STRC (above STRF) require majority STRC holder approval. Given the 21/21 Plan and beyond, continued capital markets activity will expand the preferred share base, diluting dividend capacity across more shares."},
             ].map(r=>(
               <div key={r.t} className="risk-item">
                 <div className="risk-ttl">⚡ {r.t}</div>
