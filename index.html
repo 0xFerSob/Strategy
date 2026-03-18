@@ -218,8 +218,8 @@ const INSTRUMENTS = [
     rank:8, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Senior Preferred", cls:"b-pref", tier:"3A",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"Mar 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
-    annualPayM:150, monthlyPayM:12.50,
-    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
+    annualPayM:128.4, monthlyPayM:10.70,
+    statedAmt:"$1,284M notional", sharesDesc:"~12.8M shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525056178/d927140d424b5.htm",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strf-perpetual-preferred-stock_03-21-2025",
     desc:"MOST SENIOR PREFERRED. 10% fixed; CUMULATIVE; $100 stated. IPO $85/share. Senior to STRC, STRK, STRD in liquidation. Compounded quarterly if unpaid.",
@@ -229,8 +229,8 @@ const INSTRUMENTS = [
     rank:9, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
-    annualPayM:577.8, monthlyPayM:48.15,
-    statedAmt:"$5.02B stated / $4.74B raised", sharesDesc:"50,246,513 shares",
+    annualPayM:577.9, monthlyPayM:48.16,
+    statedAmt:"$5,025M notional", sharesDesc:"50,246,513 shares",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
     desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
@@ -241,8 +241,8 @@ const INSTRUMENTS = [
     rank:10, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Junior Preferred", cls:"b-pref", tier:"3C",
     amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
     issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
-    annualPayM:160, monthlyPayM:13.33,
-    statedAmt:"~$2.0B est.", sharesDesc:"~20M shares",
+    annualPayM:112.2, monthlyPayM:9.35,
+    statedAmt:"$1,402M notional", sharesDesc:"~14.0M shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
     pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
     desc:"JUNIOR PREFERRED. 8% fixed; CUMULATIVE; $100 stated. IPO $80/share. Junior to STRF and STRC in liquidation. Senior to STRD and common only.",
@@ -251,8 +251,8 @@ const INSTRUMENTS = [
     rank:11, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Junior Preferred", cls:"b-pref", tier:"3C",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"Jun 2025", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
-    annualPayM:150, monthlyPayM:12.50,
-    statedAmt:"~$1.5B est.", sharesDesc:"~15M shares",
+    annualPayM:140.2, monthlyPayM:11.69,
+    statedAmt:"$1,402M notional", sharesDesc:"~14.0M shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
     desc:"MOST JUNIOR PREFERRED. 10% fixed; NON-CUMULATIVE — missed dividends lost permanently. Junior to STRF, STRC, STRK. Senior to common only. Explains persistent discount to par.",
@@ -303,7 +303,7 @@ const DEBT_HISTORY = [
   {year:"2022", secured:0,   conv:0,    pref:0},
   {year:"2023", secured:500, conv:0,    pref:0},
   {year:"2024", secured:0,   conv:9610, pref:0},
-  {year:"2025", secured:0,   conv:3604, pref:3000},
+  {year:"2025", secured:0,   conv:3604, pref:9113},
 ];
 
 /* ── Monthly payment data ── */
@@ -315,10 +315,10 @@ const DEBT_PAYMENTS = [
   {name:"2.25% Conv 2032",         notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
 ];
 const PREF_PAYMENTS = [
-  {name:"STRK — 8% fixed",    stated:"~$2.0B", annual:160, monthly:13.33, freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
-  {name:"STRF — 10% fixed",   stated:"~$1.5B", annual:150, monthly:12.50, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
-  {name:"STRD — 10% fixed",   stated:"~$1.5B", annual:150, monthly:12.50, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
-  {name:"STRC — 11.5% variable",stated:"$4.74B raised", annual:577.8, monthly:48.15, freq:"Monthly",    cum:"Variable",      color:"#a855f7"},
+  {name:"STRK — 8% fixed",    stated:"$1,402M", annual:112.2, monthly:9.35,  freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
+  {name:"STRF — 10% fixed",   stated:"$1,284M", annual:128.4, monthly:10.70, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
+  {name:"STRD — 10% fixed",   stated:"$1,402M", annual:140.2, monthly:11.69, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
+  {name:"STRC — 11.5% variable",stated:"$5,025M",annual:577.9, monthly:48.16, freq:"Monthly",    cum:"Variable",      color:"#a855f7"},
 ];
 
 /* ── Structure chart data (senior → junior) ── */
@@ -330,10 +330,10 @@ const STRUCT_CHART = [
   {name:"0% Conv Mar 2030",        amt:2000, type:"Convertible Note",    fill:"#0891b2"},
   {name:"0% Conv Feb 2030",        amt:2600, type:"Convertible Note",    fill:"#0891b2"},
   {name:"0% Conv Dec 2029",        amt:3000, type:"Convertible Note",    fill:"#0891b2"},
-  {name:"STRF — Strife (Senior Pref)",      amt:1500, type:"Preferred Equity",    fill:"#fb923c"},
-  {name:"STRC — Stretch (2nd-Tier Pref)",   amt:5020, type:"Preferred Equity",    fill:"#a855f7"},
-  {name:"STRK — Strike (Junior Pref)",      amt:2000, type:"Preferred Equity",    fill:"#f97316"},
-  {name:"STRD — Stride (Junior Pref)",      amt:1500, type:"Preferred Equity",    fill:"#f59e0b"},
+  {name:"STRF — Strife (Senior Pref)",      amt:1284, type:"Preferred Equity",    fill:"#fb923c"},
+  {name:"STRC — Stretch (2nd-Tier Pref)",   amt:5025, type:"Preferred Equity",    fill:"#a855f7"},
+  {name:"STRK — Strike (Junior Pref)",      amt:1402, type:"Preferred Equity",    fill:"#f97316"},
+  {name:"STRD — Stride (Junior Pref)",      amt:1402, type:"Preferred Equity",    fill:"#f59e0b"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
 
 /* ═══════════════════════════════════════════════
@@ -1315,7 +1315,7 @@ function Dashboard() {
                         <Area type="monotone" dataKey="p" name="STRC" stroke="#a855f7" fill="url(#gSTRC)" strokeWidth={1.5} dot={false}/>
                       </AreaChart>
                     </ResponsiveContainer>
-                    <div className="chart-note">50,246,513 shares · $4.74B raised · Monthly dividends · {D('STRC').length} daily data points</div>
+                    <div className="chart-note">50,246,513 shares · $5,025M notional · Monthly dividends · {D('STRC').length} daily data points</div>
                   </div>
 
                   {/* STRF */}
