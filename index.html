@@ -119,6 +119,7 @@
     .f-10k{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
     .f-424{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);}
     .f-s3{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+    .f-4{background:rgba(234,179,8,.12);color:#eab308;border:1px solid rgba(234,179,8,.3);}
     .live-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;color:#22c55e;letter-spacing:.05em;}
     .stale-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;color:#eab308;letter-spacing:.05em;}
     .sync-banner{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:9px;padding:10px 16px;display:flex;align-items:center;gap:12px;margin-bottom:18px;font-size:11px;color:#8ba3c7;flex-wrap:wrap;}
@@ -579,10 +580,15 @@ function Dashboard() {
       .then(data => {
         const recent = data.filings.recent;
         const rows = [];
-        const FORMS = ['8-K','10-Q','10-K','424B5','S-3ASR','S-3'];
-        for (let i = 0; i < recent.form.length && rows.length < 20; i++) {
+        // Include all key form types: 8-K (current events incl. BTC buys),
+        // 10-Q / 10-K (financials), 424B5 (prospectus supplements),
+        // S-3 (shelf registrations), Form 4 (insider transactions)
+        const FORMS = ['8-K','10-Q','10-K','424B5','S-3ASR','S-3','4'];
+        // Collect up to 40 matching filings (Form 4s are very frequent so cap higher)
+        for (let i = 0; i < recent.form.length && rows.length < 40; i++) {
           const form = recent.form[i];
-          if (FORMS.some(f => form.startsWith(f.replace('-',''))||form===f)) {
+          // Match exact form name OR amended variants (e.g. 8-K/A, 10-K/A, 4/A)
+          if (FORMS.some(f => form === f || form.startsWith(f + '/'))) {
             rows.push({
               form,
               filed: recent.filingDate[i],
@@ -805,12 +811,19 @@ function Dashboard() {
                     </thead>
                     <tbody>
                       {secFilings.map((f,i) => {
-                        const fmtCls = f.form==='8-K'?'f-8k':f.form==='10-Q'?'f-10q':f.form==='10-K'?'f-10k':f.form.startsWith('424')?'f-424':'f-s3';
-                        const impact = f.form==='8-K' ? 'BTC purchase / dividend / issuance announcement'
-                          : f.form==='10-Q' ? 'Cash balance, BTC holdings, debt schedule update'
-                          : f.form==='10-K' ? 'Annual: full capital structure, cash, covenants'
-                          : f.form.startsWith('424') ? 'New preferred / debt instrument prospectus'
+                        const fmtCls = f.form.startsWith('8-K') ? 'f-8k'
+                          : f.form.startsWith('10-Q') ? 'f-10q'
+                          : f.form.startsWith('10-K') ? 'f-10k'
+                          : f.form.startsWith('424') ? 'f-424'
+                          : f.form.startsWith('S-3') ? 'f-s3'
+                          : f.form==='4'||f.form==='4/A' ? 'f-4'
+                          : 'f-s3';
+                        const impact = f.form.startsWith('8-K') ? 'BTC purchase / dividend announcement / capital raise'
+                          : f.form.startsWith('10-Q') ? 'Quarterly: cash balance, BTC holdings, debt schedule'
+                          : f.form.startsWith('10-K') ? 'Annual: full capital structure, cash, covenants'
+                          : f.form.startsWith('424') ? 'New security prospectus — preferred stock or conv. notes'
                           : f.form.startsWith('S-3') ? 'Shelf registration — future issuance capacity'
+                          : f.form==='4'||f.form==='4/A' ? 'Insider transaction — exec / director buy or sell'
                           : '—';
                         const accClean = f.accNo.replace(/-/g,'');
                         const url = `https://www.sec.gov/Archives/edgar/data/1050446/${accClean}/${f.primaryDoc}`;
