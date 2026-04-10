@@ -111,6 +111,17 @@
     .mono{font-family:'Consolas','Monaco',monospace;}
     .bold{font-weight:700;}
     .tr{text-align:right;}
+    .filing-row{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;}
+    .filing-row:last-child{border-bottom:none;}
+    .form-badge{padding:2px 7px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.05em;flex-shrink:0;margin-top:1px;}
+    .f-8k{background:rgba(249,115,22,.15);color:#f97316;border:1px solid rgba(249,115,22,.3);}
+    .f-10q{background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);}
+    .f-10k{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+    .f-424{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);}
+    .f-s3{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+    .live-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;color:#22c55e;letter-spacing:.05em;}
+    .stale-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;color:#eab308;letter-spacing:.05em;}
+    .sync-banner{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:9px;padding:10px 16px;display:flex;align-items:center;gap:12px;margin-bottom:18px;font-size:11px;color:#8ba3c7;flex-wrap:wrap;}
     ::-webkit-scrollbar{width:5px;height:5px;}
     ::-webkit-scrollbar-track{background:var(--bg0);}
     ::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px;}
@@ -515,6 +526,9 @@ function Dashboard() {
   const [btcLoading, setBtcLoading] = useState(true);
   const [livePrices, setLivePrices] = useState({});
   const [pricesLoading, setPricesLoading] = useState(true);
+  const [secFilings, setSecFilings] = useState([]);
+  const [filingsLoading, setFilingsLoading] = useState(true);
+  const [filingsTs, setFilingsTs] = useState(null);
 
   /* ── Live BTC price ── */
   useEffect(() => {
@@ -556,6 +570,35 @@ function Dashboard() {
       });
   }, []);
 
+  /* ── Live SEC EDGAR filings feed (CIK 1050446 = MicroStrategy/Strategy) ── */
+  /* data.sec.gov supports CORS natively — no proxy needed */
+  useEffect(() => {
+    const EDGAR = 'https://data.sec.gov/submissions/CIK0001050446.json';
+    fetch(EDGAR)
+      .then(r => r.json())
+      .then(data => {
+        const recent = data.filings.recent;
+        const rows = [];
+        const FORMS = ['8-K','10-Q','10-K','424B5','S-3ASR','S-3'];
+        for (let i = 0; i < recent.form.length && rows.length < 20; i++) {
+          const form = recent.form[i];
+          if (FORMS.some(f => form.startsWith(f.replace('-',''))||form===f)) {
+            rows.push({
+              form,
+              filed: recent.filingDate[i],
+              desc: recent.primaryDocument[i],
+              accNo: recent.accessionNumber[i],
+              primaryDoc: recent.primaryDocument[i],
+            });
+          }
+        }
+        setSecFilings(rows);
+        setFilingsTs(new Date());
+        setFilingsLoading(false);
+      })
+      .catch(() => setFilingsLoading(false));
+  }, []);
+
   const btcSpot   = btcPrice ? btcPrice.usd : null;
   const btcChg24  = btcPrice ? btcPrice.usd_24h_change : null;
   const BTC_HELD  = 738731;
@@ -589,7 +632,12 @@ function Dashboard() {
           </div>
         </div>
         <div className="hdr-right">
-          <div>Data approx. Q1 2026 · Source: SEC EDGAR</div>
+          <div>
+            {filingsTs
+              ? <span className="live-pill">● LIVE · SEC EDGAR last scanned {filingsTs.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span>
+              : <span className="stale-pill">● Scanning SEC EDGAR…</span>
+            }
+          </div>
           <div>
             <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer">strategy.com/financial-documents</a>
             {" · "}
@@ -649,6 +697,16 @@ function Dashboard() {
                 <div className="card-lbl">Total Monthly Obligation</div>
                 <div className="card-val" style={{color:"#a855f7"}}>~${totalMonthly.toFixed(1)}M</div>
                 <div className="card-sub">Interest + preferred dividends</div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Cash on Balance Sheet <span style={{fontSize:9,color:"#eab308",fontWeight:700,marginLeft:4}}>10-Q / 8-K</span></div>
+                <div className="card-val" style={{color:"#eab308"}}>~$63M</div>
+                <div className="card-sub">Q4 2024 10-K · excludes BTC · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=10-Q&dateb=&owner=include&count=10" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>latest 10-Q ↗</a></div>
+              </div>
+              <div className="card">
+                <div className="card-lbl">Dividend / Interest Reserve</div>
+                <div className="card-val" style={{color:"#06b6d4"}}>$1.44B</div>
+                <div className="card-sub">Established Dec 2025 · covers ~17mo obligations</div>
               </div>
             </div>
           </div>
@@ -710,6 +768,67 @@ function Dashboard() {
               * Preferred dividend amounts are estimates based on approximate shares outstanding. Strategy established a $1.44B dividend/interest reserve (Dec 2025).
               Source: <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>strategy.com/financial-documents</a>
             </div>
+          </div>
+
+          {/* ── Live SEC EDGAR filings feed ── */}
+          <div className="sec">
+            <div className="sec-title">
+              Recent SEC Filings — Strategy Inc. (CIK 1050446)
+              <span style={{marginLeft:8,fontWeight:400,textTransform:"none",letterSpacing:0,fontSize:10,color:"#4e6a96"}}>
+                {filingsLoading ? "scanning…" : filingsTs ? `Last fetched ${filingsTs.toLocaleString()}` : "unavailable"}
+              </span>
+            </div>
+            <div className="sync-banner">
+              <span style={{fontSize:18}}>📡</span>
+              <span>
+                This panel fetches <strong style={{color:"#06b6d4"}}>live from SEC EDGAR</strong> each time the page loads — no manual refresh needed.
+                8-K filings (BTC purchases, preferred issuances, dividend announcements), 10-Q/10-K (cash + balance sheet), and 424B5 (new preferred prospectuses) appear here automatically.
+              </span>
+              <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=&dateb=&owner=include&count=40" target="_blank" rel="noopener noreferrer" style={{marginLeft:"auto",color:"#06b6d4",fontSize:11,flexShrink:0}}>View all on EDGAR ↗</a>
+            </div>
+            {filingsLoading ? (
+              <div style={{color:"#4e6a96",fontSize:12,padding:"18px 0"}}>Loading SEC EDGAR filings…</div>
+            ) : secFilings.length === 0 ? (
+              <div style={{color:"#ef4444",fontSize:12,padding:"18px 0"}}>Could not load filings — check network / CORS proxy. <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=&dateb=&owner=include&count=40" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>Open EDGAR directly ↗</a></div>
+            ) : (
+              <div className="tbl-wrap">
+                <div className="tbl-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Form</th>
+                        <th>Filed</th>
+                        <th>Description / Document</th>
+                        <th>Capital Structure Impact</th>
+                        <th>Link</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {secFilings.map((f,i) => {
+                        const fmtCls = f.form==='8-K'?'f-8k':f.form==='10-Q'?'f-10q':f.form==='10-K'?'f-10k':f.form.startsWith('424')?'f-424':'f-s3';
+                        const impact = f.form==='8-K' ? 'BTC purchase / dividend / issuance announcement'
+                          : f.form==='10-Q' ? 'Cash balance, BTC holdings, debt schedule update'
+                          : f.form==='10-K' ? 'Annual: full capital structure, cash, covenants'
+                          : f.form.startsWith('424') ? 'New preferred / debt instrument prospectus'
+                          : f.form.startsWith('S-3') ? 'Shelf registration — future issuance capacity'
+                          : '—';
+                        const accClean = f.accNo.replace(/-/g,'');
+                        const url = `https://www.sec.gov/Archives/edgar/data/1050446/${accClean}/${f.primaryDoc}`;
+                        return (
+                          <tr key={i}>
+                            <td><span className={`form-badge ${fmtCls}`}>{f.form}</span></td>
+                            <td style={{color:"#8ba3c7",fontFamily:"monospace",whiteSpace:"nowrap"}}>{f.filed}</td>
+                            <td style={{maxWidth:320,wordBreak:"break-all",fontSize:11,color:"#8ba3c7"}}>{f.desc}</td>
+                            <td style={{fontSize:11,color:"#4e6a96"}}>{impact}</td>
+                            <td><a href={url} target="_blank" rel="noopener noreferrer" className="src-btn src-sec">EDGAR ↗</a></td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Full instrument table */}
