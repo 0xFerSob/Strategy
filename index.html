@@ -155,18 +155,9 @@ function ttmStr(matStr) {
    INSTRUMENTS
 ═══════════════════════════════════════════════ */
 const INSTRUMENTS = [
+  // NOTE: 6.125% Senior Secured Notes ($500M) were FULLY REDEEMED Sep 26, 2024 at 103.063%. No longer outstanding.
   {
-    rank:1, name:"6.125% Senior Secured Notes", ticker:"—", type:"Senior Secured", cls:"b-sec", tier:1,
-    amount:500, coupon:6.125, ytm:6.10, maturity:"Feb 1, 2028", matStr:"2028-02-01",
-    issued:"Mar 2023", conv:null, cumulative:null, payFreq:"Semi-annual (Feb/Aug)",
-    annualPayM:30.63, monthlyPayM:2.55,
-    statedAmt:"$500M", sharesDesc:null,
-    secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000095017025021814/mstr-20241231.htm",
-    pressLink:null,
-    desc:"First-priority lien secured by BTC held in designated custodial accounts. Bitcoin collateral pledged under the indenture.",
-  },
-  {
-    rank:2, name:"0.625% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    rank:1, name:"0.625% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
     amount:1010, coupon:0.625, ytm:0.60, maturity:"Sep 15, 2028", matStr:"2028-09-15",
     issued:"Sep 2024", conv:"$1,497.68", cumulative:null, payFreq:"Semi-annual (Mar/Sep)",
     annualPayM:6.31, monthlyPayM:0.53,
@@ -176,7 +167,7 @@ const INSTRUMENTS = [
     desc:"Convertible to MSTR common at $1,497.68/share. Semi-annual coupon.",
   },
   {
-    rank:3, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    rank:2, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
     amount:3000, coupon:0.000, ytm:0.00, maturity:"Dec 1, 2029", matStr:"2029-12-01",
     issued:"Nov 2024", conv:"$672.40", cumulative:null, payFreq:"None (zero-coupon)",
     annualPayM:0, monthlyPayM:0,
@@ -186,7 +177,7 @@ const INSTRUMENTS = [
     desc:"Largest single tranche. Zero-coupon; convertible at $672.40. $3B raised Q4 2024.",
   },
   {
-    rank:4, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    rank:3, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
     amount:2600, coupon:0.000, ytm:0.00, maturity:"Feb 1, 2030", matStr:"2030-02-01",
     issued:"Dec 2024", conv:"$433.43", cumulative:null, payFreq:"None (zero-coupon)",
     annualPayM:0, monthlyPayM:0,
@@ -196,7 +187,7 @@ const INSTRUMENTS = [
     desc:"Zero-coupon; issued as part of 21/21 Plan accelerated capital raise.",
   },
   {
-    rank:5, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    rank:4, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
     amount:2000, coupon:0.000, ytm:0.00, maturity:"Mar 1, 2030", matStr:"2030-03-01",
     issued:"Feb 2025", conv:"$553.22", cumulative:null, payFreq:"None (zero-coupon)",
     annualPayM:0, monthlyPayM:0,
@@ -206,8 +197,8 @@ const INSTRUMENTS = [
     desc:"Zero-coupon; $2B raised Feb 2025. Continued BTC accumulation strategy.",
   },
   {
-    rank:6, name:"0.875% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
-    amount:604, coupon:0.875, ytm:0.85, maturity:"Mar 1, 2031", matStr:"2031-03-01",
+    rank:5, name:"0.875% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:604, coupon:0.875, ytm:0.85, maturity:"Mar 15, 2031", matStr:"2031-03-15",
     issued:"Mar 2025", conv:"~$1,100+", cumulative:null, payFreq:"Semi-annual",
     annualPayM:5.29, monthlyPayM:0.44,
     statedAmt:"$604M", sharesDesc:null,
@@ -216,7 +207,7 @@ const INSTRUMENTS = [
     desc:"Convertible notes issued Mar 2025 as Strategy continued 21/21 Plan.",
   },
   {
-    rank:7, name:"2.25% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    rank:6, name:"2.25% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
     amount:800, coupon:2.25, ytm:2.20, maturity:"Jun 15, 2032", matStr:"2032-06-15",
     issued:"Jun 2024", conv:"$2,327.06", cumulative:null, payFreq:"Semi-annual (Jun/Dec)",
     annualPayM:18.00, monthlyPayM:1.50,
@@ -227,22 +218,22 @@ const INSTRUMENTS = [
   },
   // ── Tier 3A: MOST SENIOR PREFERRED ──
   {
-    rank:8, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Senior Preferred", cls:"b-pref", tier:"3A",
+    rank:7, name:"Strife Perpetual Preferred", ticker:"STRF", type:"Senior Preferred", cls:"b-pref", tier:"3A",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"Mar 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
     annualPayM:128.4, monthlyPayM:10.70,
-    statedAmt:"$1,284M notional", sharesDesc:"~12.8M shares",
+    statedAmt:"$1,284M notional", sharesDesc:"12,839,689 shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525056178/d927140d424b5.htm",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strf-perpetual-preferred-stock_03-21-2025",
     desc:"MOST SENIOR PREFERRED. 10% fixed; CUMULATIVE; $100 stated. IPO $85/share. Senior to STRC, STRK, STRD in liquidation. Compounded quarterly if unpaid.",
   },
   // ── Tier 3B: SECOND-TIER PREFERRED ──
   {
-    rank:9, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
+    rank:8, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
-    annualPayM:577.9, monthlyPayM:48.16,
-    statedAmt:"$5,025M notional", sharesDesc:"50,246,513 shares",
+    annualPayM:567.4, monthlyPayM:47.28,
+    statedAmt:"~$4,934M notional", sharesDesc:"~49.3M shares (as of Apr 5, 2026)",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
     desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
@@ -250,27 +241,27 @@ const INSTRUMENTS = [
   },
   // ── Tier 3C: JUNIOR PREFERRED ──
   {
-    rank:10, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Junior Preferred", cls:"b-pref", tier:"3C",
+    rank:9, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Junior Preferred", cls:"b-pref", tier:"3C",
     amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
     issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
-    annualPayM:112.2, monthlyPayM:9.35,
-    statedAmt:"$1,402M notional", sharesDesc:"~14.0M shares",
+    annualPayM:111.9, monthlyPayM:9.32,
+    statedAmt:"$1,398M notional", sharesDesc:"13,981,948 shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
     pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
     desc:"JUNIOR PREFERRED. 8% fixed; CUMULATIVE; $100 stated. IPO $80/share. Junior to STRF and STRC in liquidation. Senior to STRD and common only.",
   },
   {
-    rank:11, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Junior Preferred", cls:"b-pref", tier:"3C",
+    rank:10, name:"Stride Perpetual Preferred", ticker:"STRD", type:"Junior Preferred", cls:"b-pref", tier:"3C",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"Jun 2025", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
     annualPayM:140.2, monthlyPayM:11.69,
-    statedAmt:"$1,402M notional", sharesDesc:"~14.0M shares",
+    statedAmt:"$1,402M notional", sharesDesc:"14,024,221 shares",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525165531/d852456d424b5.htm",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strd-perpetual-preferred-stock_06-27-2025",
     desc:"MOST JUNIOR PREFERRED. 10% fixed; NON-CUMULATIVE — missed dividends lost permanently. Junior to STRF, STRC, STRK. Senior to common only. Explains persistent discount to par.",
   },
   {
-    rank:12, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
+    rank:11, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
     amount:null, coupon:null, ytm:null, maturity:"N/A", matStr:null,
     issued:"Jun 1998", conv:"N/A", cumulative:null, payFreq:"No dividend",
     annualPayM:0, monthlyPayM:0,
@@ -306,7 +297,7 @@ const BTC_DATA = [
   {q:"Q2'25", btc:576230, price:98000, val:56.47},
   {q:"Q3'25", btc:640808, price:72000, val:46.14},
   {q:"Q4'25", btc:706137, price:95000, val:67.08},
-  {q:"Q1'26", btc:738731, price:86000, val:63.53},
+  {q:"Q1'26", btc:766970, price:73241, val:56.17},  // Apr 5, 2026 per 8-K
 ];
 
 const DEBT_HISTORY = [
@@ -319,33 +310,33 @@ const DEBT_HISTORY = [
 ];
 
 /* ── Monthly payment data ── */
+// NOTE: 6.125% Secured Notes redeemed Sep 26, 2024 — removed from payments
 const DEBT_PAYMENTS = [
-  {name:"6.125% Secured 2028",     notional:500,  annual:30.63, monthly:2.55, freq:"Semi-annual", color:"#22c55e"},
-  {name:"0.625% Conv 2028",        notional:1010, annual:6.31,  monthly:0.53, freq:"Semi-annual", color:"#06b6d4"},
-  {name:"0% Conv notes (4 tranches)", notional:9600, annual:0, monthly:0,    freq:"Zero-coupon", color:"#4e6a96"},
-  {name:"0.875% Conv 2031",        notional:604,  annual:5.29,  monthly:0.44, freq:"Semi-annual", color:"#06b6d4"},
-  {name:"2.25% Conv 2032",         notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
+  {name:"0.625% Conv 2028",           notional:1010, annual:6.31,  monthly:0.53, freq:"Semi-annual", color:"#06b6d4"},
+  {name:"0% Conv notes (5 tranches)", notional:9600, annual:0,     monthly:0,    freq:"Zero-coupon", color:"#4e6a96"},
+  {name:"0.875% Conv 2031",           notional:604,  annual:5.29,  monthly:0.44, freq:"Semi-annual", color:"#06b6d4"},
+  {name:"2.25% Conv 2032",            notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
 ];
 const PREF_PAYMENTS = [
-  {name:"STRK — 8% fixed",    stated:"$1,402M", annual:112.2, monthly:9.35,  freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
-  {name:"STRF — 10% fixed",   stated:"$1,284M", annual:128.4, monthly:10.70, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
-  {name:"STRD — 10% fixed",   stated:"$1,402M", annual:140.2, monthly:11.69, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
-  {name:"STRC — 11.5% variable",stated:"$5,025M",annual:577.9, monthly:48.16, freq:"Monthly",    cum:"Variable",      color:"#a855f7"},
+  {name:"STRK — 8% fixed",       stated:"$1,398M", annual:111.9, monthly:9.32,  freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
+  {name:"STRF — 10% fixed",      stated:"$1,284M", annual:128.4, monthly:10.70, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
+  {name:"STRD — 10% fixed",      stated:"$1,402M", annual:140.2, monthly:11.69, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
+  {name:"STRC — 11.5% variable", stated:"~$4,934M", annual:567.4, monthly:47.28, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
 ];
 
 /* ── Structure chart data (senior → junior) ── */
+// 6.125% Secured Notes redeemed Sep 26, 2024 — not included
 const STRUCT_CHART = [
-  {name:"6.125% Secured 2028",     amt:500,  type:"Senior Secured",     fill:"#22c55e"},
-  {name:"0.625% Conv 2028",        amt:1010, type:"Convertible Note",    fill:"#06b6d4"},
-  {name:"0.875% Conv 2031",        amt:604,  type:"Convertible Note",    fill:"#06b6d4"},
-  {name:"2.25% Conv 2032",         amt:800,  type:"Convertible Note",    fill:"#06b6d4"},
-  {name:"0% Conv Mar 2030",        amt:2000, type:"Convertible Note",    fill:"#0891b2"},
-  {name:"0% Conv Feb 2030",        amt:2600, type:"Convertible Note",    fill:"#0891b2"},
-  {name:"0% Conv Dec 2029",        amt:3000, type:"Convertible Note",    fill:"#0891b2"},
-  {name:"STRF — Strife (Senior Pref)",      amt:1284, type:"Preferred Equity",    fill:"#fb923c"},
-  {name:"STRC — Stretch (2nd-Tier Pref)",   amt:5025, type:"Preferred Equity",    fill:"#a855f7"},
-  {name:"STRK — Strike (Junior Pref)",      amt:1402, type:"Preferred Equity",    fill:"#f97316"},
-  {name:"STRD — Stride (Junior Pref)",      amt:1402, type:"Preferred Equity",    fill:"#f59e0b"},
+  {name:"0.625% Conv 2028",               amt:1010, type:"Convertible Note", fill:"#06b6d4"},
+  {name:"0.875% Conv Mar 2031",           amt:604,  type:"Convertible Note", fill:"#06b6d4"},
+  {name:"2.25% Conv Jun 2032",            amt:800,  type:"Convertible Note", fill:"#06b6d4"},
+  {name:"0% Conv Mar 2030",               amt:2000, type:"Convertible Note", fill:"#0891b2"},
+  {name:"0% Conv Feb 2030",               amt:2600, type:"Convertible Note", fill:"#0891b2"},
+  {name:"0% Conv Dec 2029",               amt:3000, type:"Convertible Note", fill:"#0891b2"},
+  {name:"STRF — Strife (Senior Pref)",    amt:1284, type:"Preferred Equity", fill:"#fb923c"},
+  {name:"STRC — Stretch (2nd-Tier Pref)", amt:4934, type:"Preferred Equity", fill:"#a855f7"},
+  {name:"STRK — Strike (Junior Pref)",    amt:1398, type:"Preferred Equity", fill:"#f97316"},
+  {name:"STRD — Stride (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f59e0b"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
 
 /* ═══════════════════════════════════════════════
@@ -357,7 +348,7 @@ const COVENANTS = [
   {icon:"📈",title:"Variable Rate Mechanism",hl:true,
    body:"Unlike STRK/STRF/STRD, the STRC dividend rate CHANGES based on the stock's 10-day volume-weighted average price (VWAP): (1) VWAP < $95 → management recommends a larger increase; (2) $95–$98.99 → smaller increase; (3) $99–$100.99 → no change; (4) ≥$101 → decrease or new follow-on offering. This creates an unusual income floor/ceiling dynamic tied to market price."},
   {icon:"🏛️",title:"Liquidation Preference & Ranking",hl:true,
-   body:"Upon liquidation: STRC receives $100/share + all accrued dividends before MSTR common. Ranking: (i) JUNIOR to all ~$10.5B+ debt (secured and unsecured); (ii) JUNIOR to STRF (most senior preferred); (iii) SENIOR to STRK and STRD (junior preferred); (iv) senior to MSTR common. BTC is pledged only to Senior Secured noteholders — STRC has NO direct lien on BTC assets."},
+   body:"Upon liquidation: STRC receives $100/share + all accrued dividends before MSTR common. Ranking: (i) JUNIOR to all ~$8.25B debt (secured and unsecured); (ii) JUNIOR to STRF (most senior preferred); (iii) SENIOR to STRK and STRD (junior preferred); (iv) senior to MSTR common. BTC is pledged only to Senior Secured noteholders — STRC has NO direct lien on BTC assets."},
   {icon:"🔄",title:"Optional Conversion (Holder Right)",hl:false,
    body:"Each STRC share may be converted into MSTR common stock at any time at the holder's option. Conversion rate = $100 ÷ Conversion Price. Conversion price is set at issuance at a premium to MSTR's then-prevailing stock price. STRC was issued at $90/share vs $100 stated — reflecting the discount at IPO."},
   {icon:"⚡",title:"Mandatory Conversion (Company Right)",hl:true,
@@ -607,7 +598,8 @@ function Dashboard() {
 
   const btcSpot   = btcPrice ? btcPrice.usd : null;
   const btcChg24  = btcPrice ? btcPrice.usd_24h_change : null;
-  const BTC_HELD  = 738731;
+  const BTC_HELD  = 766970;  // per 8-K Apr 6, 2026
+  const BTC_COST  = 75644;   // avg cost basis per 8-K Apr 6, 2026
   const treasuryVal = btcSpot ? (BTC_HELD * btcSpot / 1e9).toFixed(2) : "...";
 
   const totalDebt = INSTRUMENTS.filter(i=>i.amount).reduce((s,i)=>s+i.amount,0);
@@ -667,18 +659,18 @@ function Dashboard() {
         ════════════════════════════════════════ */}
         {tab==="overview" && <>
           <div className="sec">
-            <div className="sec-title">Key Metrics — Q1 2026</div>
+            <div className="sec-title">Key Metrics — as of Apr 5, 2026 (8-K) / Dec 31, 2025 (10-K)</div>
             <div className="cards">
               <div className="card">
-                <div className="card-lbl">BTC Holdings</div>
-                <div className="card-val" style={{color:"#f97316"}}>738,731</div>
-                <div className="card-sub">≈3.5% of total BTC supply</div>
+                <div className="card-lbl">BTC Holdings <span style={{fontSize:9,color:"#06b6d4",fontWeight:700,marginLeft:4}}>Apr 5, 2026</span></div>
+                <div className="card-val" style={{color:"#f97316"}}>766,970</div>
+                <div className="card-sub">≈3.65% of total BTC supply · per 8-K Apr 6, 2026</div>
               </div>
               <div className="card">
                 <div className="card-lbl">Avg. Cost Basis / BTC</div>
-                <div className="card-val">~$66,384</div>
-                <div className="card-sub" style={{color:btcSpot&&btcSpot>66384?"#22c55e":"#ef4444"}}>
-                  {btcSpot ? `${btcSpot>66384?"Gain":"Loss"} vs $66,384 avg cost` : "vs $66,384 avg cost"}
+                <div className="card-val">~$75,644</div>
+                <div className="card-sub" style={{color:btcSpot&&btcSpot>75644?"#22c55e":"#ef4444"}}>
+                  {btcSpot ? `${btcSpot>75644?"Gain":"Loss"} vs $75,644 avg cost` : "vs $75,644 avg cost"}
                 </div>
               </div>
               <div className="card">
@@ -690,14 +682,14 @@ function Dashboard() {
                 </div>
               </div>
               <div className="card">
-                <div className="card-lbl">Total Debt (Conv. + Secured)</div>
-                <div className="card-val" style={{color:"#ef4444"}}>~$10.5B</div>
-                <div className="card-sub">$500M secured + ~$10.0B conv.</div>
+                <div className="card-lbl">Total Debt (Conv. Notes)</div>
+                <div className="card-val" style={{color:"#ef4444"}}>~$8.25B</div>
+                <div className="card-sub">6 conv. tranches · secured notes redeemed Sep 2024</div>
               </div>
               <div className="card">
                 <div className="card-lbl">Debt / BTC Treasury LTV</div>
-                <div className="card-val">16.6%</div>
-                <div className="card-sub">Significant buffer at current BTC price</div>
+                <div className="card-val">{btcSpot ? `${(8254/(BTC_HELD*btcSpot/1e6)*100).toFixed(1)}%` : "~15.3%"}</div>
+                <div className="card-sub">$8.25B debt vs {btcSpot ? `$${(BTC_HELD*btcSpot/1e9).toFixed(1)}B` : "BTC treasury"} · live</div>
               </div>
               <div className="card">
                 <div className="card-lbl">Total Monthly Obligation</div>
@@ -705,14 +697,14 @@ function Dashboard() {
                 <div className="card-sub">Interest + preferred dividends</div>
               </div>
               <div className="card">
-                <div className="card-lbl">Cash on Balance Sheet <span style={{fontSize:9,color:"#eab308",fontWeight:700,marginLeft:4}}>10-Q / 8-K</span></div>
-                <div className="card-val" style={{color:"#eab308"}}>~$63M</div>
-                <div className="card-sub">Q4 2024 10-K · excludes BTC · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=10-Q&dateb=&owner=include&count=10" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>latest 10-Q ↗</a></div>
+                <div className="card-lbl">Cash on Balance Sheet <span style={{fontSize:9,color:"#eab308",fontWeight:700,marginLeft:4}}>10-K</span></div>
+                <div className="card-val" style={{color:"#eab308"}}>~$2.30B</div>
+                <div className="card-sub">Dec 31, 2025 10-K · incl. $2.25B USD Reserve · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=1050446&type=10-Q&dateb=&owner=include&count=10" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>latest 10-Q ↗</a></div>
               </div>
               <div className="card">
-                <div className="card-lbl">Dividend / Interest Reserve</div>
-                <div className="card-val" style={{color:"#06b6d4"}}>$1.44B</div>
-                <div className="card-sub">Established Dec 2025 · covers ~17mo obligations</div>
+                <div className="card-lbl">USD Reserve (Div. / Interest)</div>
+                <div className="card-val" style={{color:"#06b6d4"}}>$2.25B</div>
+                <div className="card-sub">As of Feb 13, 2026 per 8-K · money market funds</div>
               </div>
             </div>
           </div>
@@ -771,7 +763,7 @@ function Dashboard() {
               </div>
             </div>
             <div style={{fontSize:10,color:"#4e6a96",marginTop:8}}>
-              * Preferred dividend amounts are estimates based on approximate shares outstanding. Strategy established a $1.44B dividend/interest reserve (Dec 2025).
+              * Preferred dividend amounts based on Dec 31, 2025 share counts per 10-K; STRC based on ~49.3M shares as of Apr 5, 2026. Strategy's USD Reserve was $2.25B as of Feb 13, 2026 per 8-K.
               Source: <a href="https://www.strategy.com/financial-documents" target="_blank" rel="noopener noreferrer" style={{color:"#06b6d4"}}>strategy.com/financial-documents</a>
             </div>
           </div>
@@ -1361,7 +1353,7 @@ function Dashboard() {
                       <div style={{borderTop:"1px solid var(--border)",paddingTop:8,marginTop:4}}>
                         <div style={{fontSize:9,color:"#4e6a96",marginBottom:2}}>BTC NAV/SHARE (approx.)</div>
                         <div style={{fontSize:11,color:"#8ba3c7",fontFamily:"monospace"}}>
-                          ~${(((BTC_HELD*btcSpot)-10500e6-11000e6)/500e6).toFixed(2)}/sh
+                          ~${(((BTC_HELD*btcSpot)-8254e6-9018e6)/500e6).toFixed(2)}/sh
                         </div>
                         <div style={{fontSize:9,color:"#4e6a96",marginTop:4}}>No dividend · BTC-leveraged equity</div>
                       </div>
@@ -1635,10 +1627,10 @@ function Dashboard() {
               <div style={{fontSize:17,fontWeight:800,marginBottom:4}}>STRC — Stretch Perpetual Preferred Stock</div>
               <div style={{fontSize:12,color:"#8ba3c7"}}>Strategy, Inc. · Ticker: STRC · Variable Rate (11.5% current · started ~9% Jul 2025) · Monthly Payments · Perpetual</div>
               <div style={{fontSize:11,color:"#8ba3c7",marginTop:5}}>
-                <span style={{color:"#ef4444",fontWeight:700}}>Junior to all ~$10.5B debt</span>
+                <span style={{color:"#ef4444",fontWeight:700}}>Junior to all ~$8.25B debt</span>
                 &nbsp;·&nbsp;<span style={{color:"#fb923c"}}>Junior to STRF</span>&nbsp;·&nbsp;<span style={{color:"#22c55e"}}>Senior to STRK/STRD</span>
                 &nbsp;·&nbsp;Senior to MSTR common
-                &nbsp;·&nbsp;Rank: <span style={{color:"#f97316",fontWeight:700}}>11 of 12</span>
+                &nbsp;·&nbsp;Rank: <span style={{color:"#f97316",fontWeight:700}}>10 of 11</span>
               </div>
               <div style={{marginTop:8,display:"flex",gap:6}}>
                 <a href="https://www.stifel.com/prospectusfiles/PD_7153.pdf" target="_blank" rel="noopener noreferrer" className="src-btn src-sec">Prospectus (PDF)</a>
@@ -1663,9 +1655,9 @@ function Dashboard() {
                 {lbl:"IPO Offering Price",val:"$90 per share",c:"#8ba3c7"},
                 {lbl:"Term / Maturity",val:"Perpetual",c:"#eab308"},
                 {lbl:"Convertible into",val:"MSTR Common",c:"#a855f7"},
-                {lbl:"Seniority Rank",val:"#11 of 12",c:"#f97316"},
-                {lbl:"Junior to Debt",val:"All ~$10.5B",c:"#ef4444"},
-                {lbl:"vs. STRF/STRK",val:"Pari Passu",c:"#8ba3c7"},
+                {lbl:"Seniority Rank",val:"#10 of 11",c:"#f97316"},
+                {lbl:"Junior to Debt",val:"All ~$8.25B",c:"#ef4444"},
+                {lbl:"vs. STRF",val:"Junior",c:"#ef4444"},
               ].map(k=>(
                 <div key={k.lbl} className="kt-card">
                   <div className="kt-lbl">{k.lbl}</div>
