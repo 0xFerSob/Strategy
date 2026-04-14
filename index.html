@@ -177,14 +177,14 @@ const INSTRUMENTS = [
     desc:"Largest single tranche. Zero-coupon; convertible at $672.40. $3B raised Q4 2024.",
   },
   {
-    rank:3, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
-    amount:2600, coupon:0.000, ytm:0.00, maturity:"Feb 1, 2030", matStr:"2030-02-01",
-    issued:"Dec 2024", conv:"$433.43", cumulative:null, payFreq:"None (zero-coupon)",
-    annualPayM:0, monthlyPayM:0,
-    statedAmt:"$2,600M", sharesDesc:null,
+    rank:3, name:"0.625% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
+    amount:800, coupon:0.625, ytm:0.60, maturity:"Mar 15, 2030", matStr:"2030-03-15",
+    issued:"Mar 2025", conv:"$773.47", cumulative:null, payFreq:"Semi-annual",
+    annualPayM:5.00, monthlyPayM:0.42,
+    statedAmt:"$800M", sharesDesc:null,
     secLink:"https://www.strategy.com/financial-documents",
     pressLink:null,
-    desc:"Zero-coupon; issued as part of 21/21 Plan accelerated capital raise.",
+    desc:"$800M 0.625% notes due Mar 2030. Per 10-K Note 8 (Dec 31, 2025).",
   },
   {
     rank:4, name:"0% Convertible Notes", ticker:"—", type:"Sr. Unsecured Conv.", cls:"b-conv", tier:2,
@@ -232,8 +232,8 @@ const INSTRUMENTS = [
     rank:8, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
-    annualPayM:567.4, monthlyPayM:47.28,
-    statedAmt:"~$4,934M notional", sharesDesc:"~49.3M shares (as of Apr 5, 2026)",
+    annualPayM:730.6, monthlyPayM:60.88,
+    statedAmt:"~$6,358M notional", sharesDesc:"63,578,103 shares (Apr 12, 2026)",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
     desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
@@ -313,7 +313,8 @@ const DEBT_HISTORY = [
 // NOTE: 6.125% Secured Notes redeemed Sep 26, 2024 — removed from payments
 const DEBT_PAYMENTS = [
   {name:"0.625% Conv 2028",           notional:1010, annual:6.31,  monthly:0.53, freq:"Semi-annual", color:"#06b6d4"},
-  {name:"0% Conv notes (5 tranches)", notional:9600, annual:0,     monthly:0,    freq:"Zero-coupon", color:"#4e6a96"},
+  {name:"0% Conv notes (3 tranches)", notional:8000, annual:0,     monthly:0,    freq:"Zero-coupon", color:"#4e6a96"},
+  {name:"0.625% Conv Mar 2030",       notional:800,  annual:5.00,  monthly:0.42, freq:"Semi-annual", color:"#06b6d4"},
   {name:"0.875% Conv 2031",           notional:604,  annual:5.29,  monthly:0.44, freq:"Semi-annual", color:"#06b6d4"},
   {name:"2.25% Conv 2032",            notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
 ];
@@ -321,7 +322,7 @@ const PREF_PAYMENTS = [
   {name:"STRK — 8% fixed",       stated:"$1,398M", annual:111.9, monthly:9.32,  freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
   {name:"STRF — 10% fixed",      stated:"$1,284M", annual:128.4, monthly:10.70, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
   {name:"STRD — 10% fixed",      stated:"$1,402M", annual:140.2, monthly:11.69, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
-  {name:"STRC — 11.5% variable", stated:"~$4,934M", annual:567.4, monthly:47.28, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
+  {name:"STRC — 11.5% variable", stated:"~$6,358M", annual:730.6, monthly:60.88, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
 ];
 
 /* ── Structure chart data (senior → junior) ── */
@@ -331,10 +332,10 @@ const STRUCT_CHART = [
   {name:"0.875% Conv Mar 2031",           amt:604,  type:"Convertible Note", fill:"#06b6d4"},
   {name:"2.25% Conv Jun 2032",            amt:800,  type:"Convertible Note", fill:"#06b6d4"},
   {name:"0% Conv Mar 2030",               amt:2000, type:"Convertible Note", fill:"#0891b2"},
-  {name:"0% Conv Feb 2030",               amt:2600, type:"Convertible Note", fill:"#0891b2"},
+  {name:"0.625% Conv Mar 2030",           amt:800,  type:"Convertible Note", fill:"#06b6d4"},
   {name:"0% Conv Dec 2029",               amt:3000, type:"Convertible Note", fill:"#0891b2"},
   {name:"STRF — Strife (Senior Pref)",    amt:1284, type:"Preferred Equity", fill:"#fb923c"},
-  {name:"STRC — Stretch (2nd-Tier Pref)", amt:4934, type:"Preferred Equity", fill:"#a855f7"},
+  {name:"STRC — Stretch (2nd-Tier Pref)", amt:6358, type:"Preferred Equity", fill:"#a855f7"},
   {name:"STRK — Strike (Junior Pref)",    amt:1398, type:"Preferred Equity", fill:"#f97316"},
   {name:"STRD — Stride (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f59e0b"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
