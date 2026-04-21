@@ -13,16 +13,26 @@ Required: Python 3.8+ (stdlib only — no pip installs needed)
 """
 import json
 import sys
+import time
 import urllib.request
+import urllib.error
 from datetime import date
 from pathlib import Path
 
 # ── Config ────────────────────────────────────────────────────────────────────
-CIK           = "0001050446"
-XBRL_URL      = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{CIK}.json"
-DATA_DIR      = Path(__file__).parent / "data"
+CIK            = "0001050446"
+# companyconcept returns only the one concept we need — smaller payload,
+# less aggressive on SEC rate-limits than the full companyfacts endpoint.
+XBRL_URL       = f"https://data.sec.gov/api/xbrl/companyconcept/CIK{CIK}/us-gaap/CashAndCashEquivalentsAtCarryingValue.json"
+XBRL_URL_ALT   = f"https://data.sec.gov/api/xbrl/companyconcept/CIK{CIK}/us-gaap/CashCashEquivalentsAndShortTermInvestments.json"
+DATA_DIR       = Path(__file__).parent / "data"
 SNAPSHOTS_FILE = DATA_DIR / "snapshots.json"
-USER_AGENT    = "Strategy Dashboard fersobrini@gmail.com"
+# SEC EDGAR requires: "Company-or-App-Name contact@email.com"
+HEADERS = {
+    "User-Agent":      "StrategyDashboard fersobrini@gmail.com",
+    "Accept":          "application/json",
+    "Accept-Encoding": "identity",
+}
 
 # ── Current obligations ($M) ───────────────────────────────────────────────────
 # Keep in sync with DEBT_PAYMENTS and PREF_PAYMENTS in index.html
@@ -83,28 +93,43 @@ def current_obligations() -> dict:
 
 # ── EDGAR helpers ──────────────────────────────────────────────────────────────
 
-def fetch_xbrl() -> dict | None:
-    req = urllib.request.Request(XBRL_URL, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return json.loads(r.read())
-    except Exception as exc:
-        print(f"ERROR: EDGAR fetch failed — {exc}", file=sys.stderr)
-        return None
+def fetch_url(url: str, retries: int = 3) -> dict | None:
+    """Fetch JSON from a SEC EDGAR URL with retries and proper headers."""
+    for attempt in range(1, retries + 1):
+        time.sleep(0.5)   # SEC asks for ≤10 req/sec; be polite
+        req = urllib.request.Request(url, headers=HEADERS)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as exc:
+            print(f"  attempt {attempt}/{retries}: HTTP {exc.code} — {url}", file=sys.stderr)
+            if exc.code == 403 and attempt < retries:
+                time.sleep(2 ** attempt)   # exponential back-off: 2s, 4s
+                continue
+            return None
+        except Exception as exc:
+            print(f"  attempt {attempt}/{retries}: {exc}", file=sys.stderr)
+            if attempt < retries:
+                time.sleep(2)
+                continue
+            return None
+    return None
 
 
-def extract_cash(xbrl_data: dict) -> tuple[str | None, list]:
-    """Return (concept_name, list_of_entries) from XBRL facts."""
-    facts = xbrl_data.get("facts", {}).get("us-gaap", {})
-    for concept in (
-        "CashAndCashEquivalentsAtCarryingValue",
-        "CashCashEquivalentsAndShortTermInvestments",
-        "Cash",
+def fetch_cash_entries() -> tuple[str | None, list]:
+    """
+    Fetch quarterly cash entries from EDGAR companyconcept endpoint.
+    The companyconcept response has shape: {units: {USD: [...]}}
+    """
+    for url, concept in (
+        (XBRL_URL,     "CashAndCashEquivalentsAtCarryingValue"),
+        (XBRL_URL_ALT, "CashCashEquivalentsAndShortTermInvestments"),
     ):
-        if concept not in facts:
+        print(f"  Fetching: {url}")
+        data = fetch_url(url)
+        if data is None:
             continue
-        entries = facts[concept].get("units", {}).get("USD", [])
-        # Prefer period-end (instant) values from quarterly/annual reports
+        entries = data.get("units", {}).get("USD", [])
         quarterly = [
             e for e in entries
             if e.get("form") in ("10-Q", "10-K")
@@ -113,9 +138,10 @@ def extract_cash(xbrl_data: dict) -> tuple[str | None, list]:
         if not quarterly:
             quarterly = [e for e in entries if e.get("form") in ("10-Q", "10-K")]
         if quarterly:
-            print(f"  Cash concept : {concept}  ({len(quarterly)} quarterly values found)")
+            print(f"  Concept: {concept} — {len(quarterly)} quarterly values")
             return concept, quarterly
-    print("ERROR: no cash concept found in XBRL data", file=sys.stderr)
+        print(f"  No usable entries for {concept}, trying fallback…")
+    print("ERROR: all EDGAR endpoints failed", file=sys.stderr)
     return None, []
 
 
@@ -162,11 +188,7 @@ def main() -> None:
     print(f"Strategy dashboard updater — {today}")
     print(f"Fetching EDGAR XBRL: {XBRL_URL}")
 
-    xbrl = fetch_xbrl()
-    if xbrl is None:
-        sys.exit(1)
-
-    concept, cash_entries = extract_cash(xbrl)
+    concept, cash_entries = fetch_cash_entries()
     if not cash_entries:
         sys.exit(1)
 
