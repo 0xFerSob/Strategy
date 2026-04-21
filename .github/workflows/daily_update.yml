@@ -22,6 +22,8 @@ jobs:
           python-version: '3.11'
 
       - name: Fetch EDGAR data and rebuild snapshots
+        id: fetch
+        continue-on-error: true   # SEC often blocks GitHub Actions IPs with 403 — fall back to local cron
         run: python update_data.py
 
       - name: Commit updated snapshots if changed

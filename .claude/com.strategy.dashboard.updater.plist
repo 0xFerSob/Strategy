@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  macOS launchd job that runs the Strategy dashboard updater daily at 10:00 local time.
+
+  Install:
+    cp .claude/com.strategy.dashboard.updater.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.strategy.dashboard.updater.plist
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.strategy.dashboard.updater.plist
+    rm ~/Library/LaunchAgents/com.strategy.dashboard.updater.plist
+
+  Logs: /tmp/strategy-updater.out  and  /tmp/strategy-updater.err
+
+  NOTE: if you clone the repo to a different path, update WorkingDirectory and ProgramArguments.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.strategy.dashboard.updater</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/fersobrini/Claude projects/.claude/worktrees/peaceful-khayyam-2ce42e/run_daily.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/fersobrini/Claude projects/.claude/worktrees/peaceful-khayyam-2ce42e</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>10</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/strategy-updater.out</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/strategy-updater.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>
