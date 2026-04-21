@@ -22,7 +22,7 @@ CIK           = "0001050446"
 XBRL_URL      = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{CIK}.json"
 DATA_DIR      = Path(__file__).parent / "data"
 SNAPSHOTS_FILE = DATA_DIR / "snapshots.json"
-USER_AGENT    = "Strategy Dashboard github.com/0xFerSob"
+USER_AGENT    = "Strategy Dashboard fersobrini@gmail.com"
 
 # ── Current obligations ($M) ───────────────────────────────────────────────────
 # Keep in sync with DEBT_PAYMENTS and PREF_PAYMENTS in index.html
