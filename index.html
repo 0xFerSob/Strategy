@@ -511,6 +511,20 @@ const STRC_RATE_CHART = DIV_HISTORY.STRC.slice().reverse().map(d=>({
 }));
 
 /* ═══════════════════════════════════════════════
+   OBLIGATION GROWTH MILESTONES
+   Tracks how monthly obligations grew as new instruments were issued.
+   Q3'25 and Q4'25 pref values are approximate (STRC ATM share counts not public per-quarter).
+═══════════════════════════════════════════════ */
+const OBLIGATION_MILESTONES = [
+  {period:"Q4'24", monthlyDebt:2.89, monthlyPref:0,     event:"Conv. notes only (pre-preferred)"},
+  {period:"Q1'25", monthlyDebt:2.89, monthlyPref:9.32,  event:"+STRK (Feb 2025, 8% fixed)"},
+  {period:"Q2'25", monthlyDebt:2.89, monthlyPref:31.71, event:"+STRF (Apr) + STRD (Jun 2025)"},
+  {period:"Q3'25", monthlyDebt:2.89, monthlyPref:48.0,  event:"+STRC launch ~$2B notional"},
+  {period:"Q4'25", monthlyDebt:2.89, monthlyPref:76.5,  event:"STRC ATM expansion ~$5B"},
+  {period:"Q1'26", monthlyDebt:2.89, monthlyPref:92.59, event:"STRC ~$6.4B at 11.5% (current)"},
+];
+
+/* ═══════════════════════════════════════════════
    MAIN DASHBOARD
 ═══════════════════════════════════════════════ */
 function Dashboard() {
@@ -522,6 +536,8 @@ function Dashboard() {
   const [secFilings, setSecFilings] = useState([]);
   const [filingsLoading, setFilingsLoading] = useState(true);
   const [filingsTs, setFilingsTs] = useState(null);
+  const [snapshotsData, setSnapshotsData] = useState(null);
+  const [snapshotsLoading, setSnapshotsLoading] = useState(true);
 
   /* ── Live BTC price ── */
   useEffect(() => {
@@ -597,6 +613,14 @@ function Dashboard() {
       .catch(() => setFilingsLoading(false));
   }, []);
 
+  /* ── Cash/coverage snapshots from data/snapshots.json (written by update_data.py) ── */
+  useEffect(() => {
+    fetch('./data/snapshots.json')
+      .then(r => r.json())
+      .then(d => { setSnapshotsData(d); setSnapshotsLoading(false); })
+      .catch(() => { setSnapshotsData({snapshots:[]}); setSnapshotsLoading(false); });
+  }, []);
+
   const btcSpot   = btcPrice ? btcPrice.usd : null;
   const btcChg24  = btcPrice ? btcPrice.usd_24h_change : null;
   const BTC_HELD  = 766970;  // per 8-K Apr 6, 2026
@@ -648,7 +672,7 @@ function Dashboard() {
       <div className="main">
         {/* ── Tabs ── */}
         <div className="tabs">
-          {["overview","capital structure","structure chart","charts","dividends","prices & markets","STRC covenants"].map(t=>(
+          {["overview","capital structure","structure chart","charts","dividends","prices & markets","STRC covenants","debt service"].map(t=>(
             <button key={t} className={`tab${tab===t?" active":""}`} onClick={()=>setTab(t)}>
               {t==="STRC covenants"?"STRC Covenants":t.charAt(0).toUpperCase()+t.slice(1)}
             </button>
@@ -1700,6 +1724,249 @@ function Dashboard() {
             ))}
           </div>
         </>}
+
+        {/* ════════════════════════════════════════
+            DEBT SERVICE
+        ════════════════════════════════════════ */}
+        {tab==="debt service" && (()=>{
+          const snapshots = snapshotsData?.snapshots || [];
+          const latest    = snapshots.length > 0 ? snapshots[snapshots.length - 1] : null;
+          const prev      = snapshots.length > 1 ? snapshots[snapshots.length - 2] : null;
+          const coverage  = latest?.coverageMonths ?? null;
+          const covColor  = coverage === null ? "#8ba3c7" : coverage < 3 ? "#ef4444" : coverage < 12 ? "#eab308" : "#22c55e";
+          const wowCash   = (latest && prev) ? +(latest.cashM - prev.cashM).toFixed(1) : null;
+          const wowMo     = (latest && prev) ? +(latest.totalMonthly - prev.totalMonthly).toFixed(2) : null;
+          return (<>
+            {/* ── KPI Cards ── */}
+            <div className="sec">
+              <div className="sec-title">Current Obligations — Interest + Dividends</div>
+              <div className="cards">
+                <div className="card">
+                  <div className="card-lbl">Monthly Debt Interest</div>
+                  <div className="card-val" style={{color:"#22c55e"}}>${totalMonthlyDebt.toFixed(2)}M</div>
+                  <div className="card-sub">${totalDebtInterestAnnual.toFixed(1)}M / year · contractual</div>
+                </div>
+                <div className="card">
+                  <div className="card-lbl">Monthly Pref Dividends</div>
+                  <div className="card-val" style={{color:"#f97316"}}>${totalMonthlyPref.toFixed(2)}M</div>
+                  <div className="card-sub">${totalPrefDivAnnual.toFixed(0)}M / year · board discretion</div>
+                </div>
+                <div className="card">
+                  <div className="card-lbl">Total Monthly Obligation</div>
+                  <div className="card-val" style={{color:"#06b6d4"}}>${totalMonthly.toFixed(2)}M</div>
+                  <div className="card-sub">${(totalMonthly*12).toFixed(0)}M / year (interest + dividends)</div>
+                </div>
+                <div className="card" style={{borderColor: coverage!==null&&coverage<6?"rgba(239,68,68,0.45)":undefined}}>
+                  <div className="card-lbl">Cash Coverage Ratio</div>
+                  <div className="card-val" style={{color:covColor}}>
+                    {coverage!==null ? `${coverage} mo` : snapshotsLoading ? "…" : "—"}
+                  </div>
+                  <div className="card-sub">
+                    {latest
+                      ? `$${latest.cashM}M cash · ${latest.form} ${latest.filingDate}`
+                      : "awaiting EDGAR data — run update_data.py"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Period-over-period change banner ── */}
+            {latest && prev && (
+              <div className="info-box" style={{marginBottom:18}}>
+                <strong style={{color:"#e8edf7"}}>vs prior filing ({prev.filingDate} · {prev.form})</strong>
+                {"  ·  "}
+                Cash: <span style={{color:wowCash>=0?"#22c55e":"#ef4444",fontWeight:700}}>{wowCash>=0?"+":""}{wowCash}M</span>
+                {"  ·  "}
+                Monthly obligation: <span style={{color:wowMo>0?"#ef4444":"#22c55e",fontWeight:700}}>{wowMo>0?"+":""}{wowMo}M/mo</span>
+                {"  ·  "}
+                Coverage: <span style={{color:covColor,fontWeight:700}}>{coverage} months</span>
+                {" vs "}
+                <span style={{color:"#8ba3c7"}}>{prev.coverageMonths} months prior</span>
+              </div>
+            )}
+
+            {/* ── Obligation growth + cash balance charts ── */}
+            <div className="sec">
+              <div className="sec-title">Monthly Obligation Growth — As New Instruments Were Issued</div>
+              <div className="chart-box" style={{marginBottom:14}}>
+                <div className="chart-title">Total Monthly Cash Obligation ($M) — Debt Interest + Preferred Dividends</div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={OBLIGATION_MILESTONES} margin={{top:4,right:20,bottom:10,left:10}}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                    <XAxis dataKey="period" stroke="#4e6a96" tick={{fontSize:11}}/>
+                    <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`$${v}M`}/>
+                    <Tooltip content={<Tip/>} formatter={(v,n)=>[`$${v}M/mo`,n]}/>
+                    <Legend wrapperStyle={{fontSize:11,paddingTop:8}}/>
+                    <Bar dataKey="monthlyDebt" name="Debt Interest ($M/mo)" stackId="a" fill="#22c55e"/>
+                    <Bar dataKey="monthlyPref" name="Pref Dividends ($M/mo)" stackId="a" fill="#f97316" radius={[4,4,0,0]}/>
+                  </BarChart>
+                </ResponsiveContainer>
+                <div className="chart-note">
+                  Monthly obligations grew ~33× from ~$2.9M/mo (Q4 2024, debt-only) to ~$95.5M/mo (Q1 2026) as preferred stock was issued.
+                  Q3'25 and Q4'25 pref values are approximate (STRC ATM share counts not disclosed per-quarter).
+                </div>
+              </div>
+            </div>
+
+            {/* ── Cash balance + coverage charts from EDGAR ── */}
+            {snapshots.length > 0 ? (
+              <div className="sec">
+                <div className="sec-title">Cash Balance & Coverage — Quarterly SEC Filing History (EDGAR XBRL)</div>
+                <div className="charts-grid">
+                  <div className="chart-box">
+                    <div className="chart-title">Cash & Cash Equivalents ($M) — Balance Sheet</div>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <AreaChart data={snapshots} margin={{top:4,right:20,bottom:30,left:10}}>
+                        <defs>
+                          <linearGradient id="gCash" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%"  stopColor="#06b6d4" stopOpacity={0.35}/>
+                            <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="filingDate" stroke="#4e6a96" tick={{fontSize:8}} angle={-30} textAnchor="end" interval={0}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`$${v}M`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`$${v}M`,"Cash"]}/>
+                        <Area type="monotone" dataKey="cashM" name="Cash ($M)" stroke="#06b6d4" fill="url(#gCash)" strokeWidth={2} dot={{r:4,fill:"#06b6d4"}}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">Source: SEC EDGAR XBRL · us-gaap/CashAndCashEquivalentsAtCarryingValue · auto-updated daily</div>
+                  </div>
+
+                  <div className="chart-box">
+                    <div className="chart-title">Cash Coverage Ratio — Months of Obligations Covered</div>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <AreaChart data={snapshots} margin={{top:4,right:20,bottom:30,left:10}}>
+                        <defs>
+                          <linearGradient id="gCov" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%"  stopColor="#22c55e" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1d2e4a"/>
+                        <XAxis dataKey="filingDate" stroke="#4e6a96" tick={{fontSize:8}} angle={-30} textAnchor="end" interval={0}/>
+                        <YAxis stroke="#4e6a96" tick={{fontSize:10}} tickFormatter={v=>`${v}mo`}/>
+                        <Tooltip content={<Tip/>} formatter={v=>[`${v} months`,"Coverage"]}/>
+                        <ReferenceLine y={12} stroke="#eab30870" strokeDasharray="4 3" label={{value:"12mo",fill:"#eab308",fontSize:9,position:"right"}}/>
+                        <ReferenceLine y={3}  stroke="#ef444470" strokeDasharray="4 3" label={{value:"3mo", fill:"#ef4444",fontSize:9,position:"right"}}/>
+                        <Area type="monotone" dataKey="coverageMonths" name="Coverage (months)" stroke="#22c55e" fill="url(#gCov)" strokeWidth={2} dot={{r:4,fill:"#22c55e"}}/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                    <div className="chart-note">Coverage = Cash ÷ Total Monthly Obligation. Red = &lt;3mo warning · Yellow = 12mo comfortable threshold.</div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="info-box">
+                No snapshot data yet.
+                Run <code style={{background:"rgba(59,130,246,0.1)",padding:"1px 5px",borderRadius:3}}>python update_data.py</code> locally,
+                or trigger the <strong>Daily Dashboard Data Update</strong> GitHub Actions workflow to populate EDGAR cash history.
+              </div>
+            )}
+
+            {/* ── Snapshot history table ── */}
+            {snapshots.length > 0 && (
+              <div className="sec">
+                <div className="sec-title">Quarterly Snapshots — Cash vs Obligations (period-over-period)</div>
+                <div className="tbl-wrap">
+                  <div className="tbl-scroll">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Period end</th>
+                          <th>Form</th>
+                          <th className="tr">Cash ($M)</th>
+                          <th className="tr">Cash Δ</th>
+                          <th className="tr">Monthly ($M)</th>
+                          <th className="tr">Monthly Δ</th>
+                          <th className="tr">Annual ($M)</th>
+                          <th className="tr">Coverage (mo)</th>
+                          <th>Obligation note</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[...snapshots].reverse().map((s,i,arr)=>{
+                          const p = arr[i+1];
+                          const dC = p ? +(s.cashM - p.cashM).toFixed(1) : null;
+                          const dM = p ? +(s.totalMonthly - p.totalMonthly).toFixed(2) : null;
+                          const cc = s.coverageMonths===null?"#8ba3c7":s.coverageMonths<3?"#ef4444":s.coverageMonths<12?"#eab308":"#22c55e";
+                          return (
+                            <tr key={s.filingDate}>
+                              <td className="bold mono">{s.filingDate}</td>
+                              <td><span className={`badge ${s.form==="10-K"?"b-sec":"b-conv"}`}>{s.form}</span></td>
+                              <td className="tr mono">${s.cashM}M</td>
+                              <td className="tr mono" style={{color:dC===null?"#8ba3c7":dC>=0?"#22c55e":"#ef4444"}}>
+                                {dC!==null?`${dC>=0?"+":""}$${dC}M`:"—"}
+                              </td>
+                              <td className="tr mono">${s.totalMonthly}M</td>
+                              <td className="tr mono" style={{color:dM===null?"#8ba3c7":dM>0?"#ef4444":"#22c55e"}}>
+                                {dM!==null?`${dM>0?"+":""}$${dM}M`:"—"}
+                              </td>
+                              <td className="tr mono">${s.totalAnnual}M</td>
+                              <td className="tr mono" style={{color:cc,fontWeight:700}}>
+                                {s.coverageMonths!==null?s.coverageMonths:"—"}
+                              </td>
+                              <td style={{fontSize:11,color:"#8ba3c7"}}>{s.note}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div style={{fontSize:10,color:"#4e6a96",marginTop:8}}>
+                  Updated daily via SEC EDGAR XBRL · Last fetch: <strong style={{color:"#8ba3c7"}}>{snapshotsData?.lastUpdated||"never"}</strong>
+                  {" · "}Coverage = Cash ÷ Total Monthly Obligation (debt interest + preferred dividends).
+                  Pre-2026 monthly pref values use estimated obligation schedule; update <code>OBLIGATION_SCHEDULE</code> in update_data.py for precision.
+                </div>
+              </div>
+            )}
+
+            {/* ── Annual breakdown table ── */}
+            <div className="sec">
+              <div className="sec-title">Annual Obligation Detail — Current Run-Rate</div>
+              <div className="tbl-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Instrument</th>
+                      <th className="tr">Monthly ($M)</th>
+                      <th className="tr">Annual ($M)</th>
+                      <th>Frequency</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {DEBT_PAYMENTS.filter(p=>p.annual>0).map(p=>(
+                      <tr key={p.name}>
+                        <td className="bold">{p.name}</td>
+                        <td className="tr mono" style={{color:"#22c55e"}}>${p.monthly.toFixed(2)}M</td>
+                        <td className="tr mono" style={{color:"#22c55e"}}>${p.annual.toFixed(2)}M</td>
+                        <td>{p.freq}</td>
+                        <td><span className="badge b-conv">Debt Interest</span></td>
+                      </tr>
+                    ))}
+                    {PREF_PAYMENTS.map(p=>(
+                      <tr key={p.name}>
+                        <td className="bold">{p.name}</td>
+                        <td className="tr mono" style={{color:"#f97316"}}>${p.monthly.toFixed(2)}M</td>
+                        <td className="tr mono" style={{color:"#f97316"}}>${p.annual.toFixed(1)}M</td>
+                        <td>{p.freq}</td>
+                        <td><span className="badge b-pref">Pref Dividend</span></td>
+                      </tr>
+                    ))}
+                    <tr style={{borderTop:"2px solid #274060",fontWeight:700}}>
+                      <td>TOTAL</td>
+                      <td className="tr mono" style={{color:"#06b6d4"}}>${totalMonthly.toFixed(2)}M</td>
+                      <td className="tr mono" style={{color:"#06b6d4"}}>${(totalMonthly*12).toFixed(0)}M</td>
+                      <td colSpan={2} style={{color:"#8ba3c7",fontSize:11}}>Interest contractual · Dividends at board discretion (except STRD non-cumulative)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>);
+        })()}
 
         <div className="disclaim">
           <strong>Disclaimer:</strong> For informational purposes only. Not investment advice.

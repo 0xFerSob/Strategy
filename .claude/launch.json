@@ -4,7 +4,7 @@
     {
       "name": "strategy-dashboard",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "cd '/Users/fersobrini/Claude projects' && python3 -m http.server ${PORT:-8765}"],
+      "runtimeArgs": ["-c", "cd '/Users/fersobrini/Claude projects/.claude/worktrees/peaceful-khayyam-2ce42e' && python3 -m http.server ${PORT:-8765}"],
       "port": 8765,
       "autoPort": true
     }

@@ -1,0 +1,37 @@
+name: Daily Dashboard Data Update
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # 10:00 UTC daily (after US market open / before EU close)
+  workflow_dispatch:         # allow manual trigger from GitHub UI
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch EDGAR data and rebuild snapshots
+        run: python update_data.py
+
+      - name: Commit updated snapshots if changed
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add data/snapshots.json
+          if git diff --staged --quiet; then
+            echo "No changes to snapshots — skipping commit."
+          else
+            git commit -m "data: daily EDGAR update $(date -u +'%Y-%m-%d')"
+            git push
+          fi
