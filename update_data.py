@@ -11,6 +11,7 @@ Run:
 
 Required: Python 3.8+ (stdlib only — no pip installs needed)
 """
+from __future__ import annotations
 import json
 import sys
 import time
