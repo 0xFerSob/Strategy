@@ -623,7 +623,9 @@ function Dashboard() {
 
   const btcSpot   = btcPrice ? btcPrice.usd : null;
   const btcChg24  = btcPrice ? btcPrice.usd_24h_change : null;
-  const BTC_HELD  = 766970;  // per 8-K Apr 6, 2026
+  const liveBtc   = snapshotsData?.liveBtc || null;
+  const BTC_HELD  = liveBtc?.btcHoldings || 766970;  // live from strategy.com, fallback = 8-K Apr 6 2026
+  const BTC_AS_OF = liveBtc?.asOfDate || "2026-04-06";
   const BTC_COST  = 75644;   // avg cost basis per 8-K Apr 6, 2026
   const treasuryVal = btcSpot ? (BTC_HELD * btcSpot / 1e9).toFixed(2) : "...";
 
@@ -687,9 +689,9 @@ function Dashboard() {
             <div className="sec-title">Key Metrics — as of Apr 5, 2026 (8-K) / Dec 31, 2025 (10-K)</div>
             <div className="cards">
               <div className="card">
-                <div className="card-lbl">BTC Holdings <span style={{fontSize:9,color:"#06b6d4",fontWeight:700,marginLeft:4}}>Apr 5, 2026</span></div>
-                <div className="card-val" style={{color:"#f97316"}}>766,970</div>
-                <div className="card-sub">≈3.65% of total BTC supply · per 8-K Apr 6, 2026</div>
+                <div className="card-lbl">BTC Holdings <span style={{fontSize:9,color:"#06b6d4",fontWeight:700,marginLeft:4}}>{liveBtc ? "● LIVE" : BTC_AS_OF}</span></div>
+                <div className="card-val" style={{color:"#f97316"}}>{BTC_HELD.toLocaleString()}</div>
+                <div className="card-sub">≈{(BTC_HELD/21e6*100).toFixed(2)}% of total BTC supply · {liveBtc ? `strategy.com as of ${BTC_AS_OF}` : "per 8-K Apr 6, 2026"}</div>
               </div>
               <div className="card">
                 <div className="card-lbl">Avg. Cost Basis / BTC</div>

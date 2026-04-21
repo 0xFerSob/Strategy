@@ -13,6 +13,7 @@ Required: Python 3.8+ (stdlib only — no pip installs needed)
 """
 from __future__ import annotations
 import json
+import re
 import sys
 import time
 import urllib.request
@@ -146,6 +147,39 @@ def fetch_cash_entries() -> tuple[str | None, list]:
     return None, []
 
 
+# ── strategy.com live BTC holdings ────────────────────────────────────────────
+
+STRATEGY_URL = "https://www.strategy.com/"
+
+def fetch_strategy_btc() -> dict | None:
+    """Scrape strategy.com homepage for live BTC holdings & cash/debt snapshot."""
+    try:
+        req = urllib.request.Request(STRATEGY_URL, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            html = r.read().decode("utf-8", errors="ignore")
+    except Exception as exc:
+        print(f"  strategy.com fetch failed: {exc}", file=sys.stderr)
+        return None
+    m = re.search(r'"btcTrackerData":(\[\{.*?\}\])', html)
+    if not m:
+        print("  strategy.com: btcTrackerData not found", file=sys.stderr)
+        return None
+    try:
+        rec = json.loads(m.group(1))[0]
+    except Exception as exc:
+        print(f"  strategy.com parse failed: {exc}", file=sys.stderr)
+        return None
+    return {
+        "asOfDate":         rec.get("as_of_date"),
+        "btcHoldings":      rec.get("btc_holdings"),
+        "cashUsd":          rec.get("cash"),
+        "debtUsd":          rec.get("debt"),
+        "annualDividendsM": rec.get("annual_dividends"),
+        "basicShares":      rec.get("basic_shares_outstanding"),
+        "btcYieldYtd":      rec.get("btc_yield_ytd"),
+    }
+
+
 # ── Snapshot builder ───────────────────────────────────────────────────────────
 
 def build_snapshots(cash_entries: list) -> list:
@@ -196,11 +230,17 @@ def main() -> None:
     snapshots = build_snapshots(cash_entries)
     cur = current_obligations()
 
+    print("\nFetching live BTC holdings from strategy.com …")
+    live_btc = fetch_strategy_btc()
+    if live_btc:
+        print(f"  BTC holdings: {live_btc['btcHoldings']:,} (as of {live_btc['asOfDate']})")
+
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     payload = {
         "lastUpdated":   today,
         "concept":       concept,
         "currentObligations": cur,
+        "liveBtc":       live_btc,
         "snapshots":     snapshots,
     }
     with open(SNAPSHOTS_FILE, "w") as fh:

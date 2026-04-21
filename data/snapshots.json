@@ -9,6 +9,15 @@
     "annualPref": 1111.1,
     "totalAnnual": 1145.7
   },
+  "liveBtc": {
+    "asOfDate": "2026-04-20",
+    "btcHoldings": 815061,
+    "cashUsd": 2250000000,
+    "debtUsd": 8253923000,
+    "annualDividendsM": 806.613,
+    "basicShares": 348992000,
+    "btcYieldYtd": 9.5
+  },
   "snapshots": [
     {
       "filingDate": "2008-12-31",
