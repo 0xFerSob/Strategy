@@ -46,10 +46,11 @@ DEBT_PAYMENTS = [
     {"name": "2.25% Conv 2032",            "annual": 18.00,  "monthly": 1.50},
 ]
 PREF_PAYMENTS = [
-    {"name": "STRK 8% fixed",       "annual": 111.9,  "monthly": 9.32},
-    {"name": "STRF 10% fixed",      "annual": 128.4,  "monthly": 10.70},
-    {"name": "STRD 10% fixed",      "annual": 140.2,  "monthly": 11.69},
-    {"name": "STRC 11.5% variable", "annual": 730.6,  "monthly": 60.88},
+    {"name": "STRK 8% fixed",       "annual": 112.17, "monthly": 9.35},
+    {"name": "STRF 10% fixed",      "annual": 128.40, "monthly": 10.70},
+    {"name": "STRD 10% fixed",      "annual": 140.24, "monthly": 11.69},
+    {"name": "STRC 11.5% variable", "annual": 981.80, "monthly": 81.82},
+    {"name": "STRE 10% fixed (€)",  "annual": 91.46,  "monthly": 7.62},
 ]
 
 # ── Historical obligation schedule ────────────────────────────────────────────
@@ -64,7 +65,8 @@ OBLIGATION_SCHEDULE = [
     ("2025-06-30",      2.89, 31.71,  "+STRD issued Jun 2025 — 10% fixed quarterly"),
     ("2025-08-31",      2.89, 48.00,  "+STRC launched Jul/Aug 2025 (~$2B notional, 9.6–10%)"),
     ("2025-10-31",      2.89, 76.50,  "STRC ATM expansion (~$5B notional, rate stepping up)"),
-    ("2026-01-31",      2.89, 92.59,  "STRC ~$6.4B notional at 11.5% (current)"),
+    ("2026-01-31",      2.89, 92.59,  "STRC ~$6.4B notional at 11.5%"),
+    ("2026-04-20",      2.89, 121.18, "STRC $8.5B + STRE €7.75M issuance (current)"),
 ]
 
 
@@ -152,7 +154,7 @@ def fetch_cash_entries() -> tuple[str | None, list]:
 STRATEGY_URL = "https://www.strategy.com/"
 
 def fetch_strategy_btc() -> dict | None:
-    """Scrape strategy.com homepage for live BTC holdings & cash/debt snapshot."""
+    """Scrape strategy.com homepage for live BTC holdings, cash/debt and preferred share counts."""
     try:
         req = urllib.request.Request(STRATEGY_URL, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=30) as r:
@@ -169,14 +171,41 @@ def fetch_strategy_btc() -> dict | None:
     except Exception as exc:
         print(f"  strategy.com parse failed: {exc}", file=sys.stderr)
         return None
+
+    # Preferred share counts by ticker; $100 stated preference; dividend rate in %
+    # STRC is variable (11.5% as of Mar 2026), others are fixed.
+    prefs = {}
+    for ticker, key in [("STRK","strk_metrics"),("STRF","strf_metrics"),
+                        ("STRC","strc_metrics"),("STRD","strd_metrics"),
+                        ("STRE","stre_metrics")]:
+        m2 = rec.get(key) or {}
+        shares = m2.get("shares") or 0
+        div_pct = m2.get("dividend") or 0
+        notional_m = shares * 100 / 1e6
+        annual_m = notional_m * div_pct / 100
+        prefs[ticker] = {
+            "shares":     shares,
+            "dividendPct": div_pct,
+            "notionalM":  round(notional_m, 2),
+            "annualM":    round(annual_m, 2),
+            "monthlyM":   round(annual_m / 12, 2),
+        }
+
+    total_monthly = round(sum(p["monthlyM"] for p in prefs.values()), 2)
+    total_annual  = round(sum(p["annualM"]  for p in prefs.values()), 2)
+
     return {
         "asOfDate":         rec.get("as_of_date"),
         "btcHoldings":      rec.get("btc_holdings"),
         "cashUsd":          rec.get("cash"),
         "debtUsd":          rec.get("debt"),
+        "prefNotionalUsd":  rec.get("pref"),
         "annualDividendsM": rec.get("annual_dividends"),
         "basicShares":      rec.get("basic_shares_outstanding"),
         "btcYieldYtd":      rec.get("btc_yield_ytd"),
+        "preferreds":       prefs,
+        "totalPrefMonthlyM": total_monthly,
+        "totalPrefAnnualM":  total_annual,
     }
 
 

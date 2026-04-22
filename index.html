@@ -232,8 +232,8 @@ const INSTRUMENTS = [
     rank:8, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
-    annualPayM:730.6, monthlyPayM:60.88,
-    statedAmt:"~$6,358M notional", sharesDesc:"63,578,103 shares (Apr 12, 2026)",
+    annualPayM:981.80, monthlyPayM:81.82,
+    statedAmt:"~$8,537M notional", sharesDesc:"85,373,492 shares (Apr 20, 2026)",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
     desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
@@ -244,8 +244,8 @@ const INSTRUMENTS = [
     rank:9, name:"Strike Perpetual Preferred", ticker:"STRK", type:"Junior Preferred", cls:"b-pref", tier:"3C",
     amount:null, coupon:8.000, ytm:8.00, maturity:"Perpetual", matStr:null,
     issued:"Feb 2025", conv:"Variable → MSTR", cumulative:true, payFreq:"Quarterly",
-    annualPayM:111.9, monthlyPayM:9.32,
-    statedAmt:"$1,398M notional", sharesDesc:"13,981,948 shares",
+    annualPayM:112.17, monthlyPayM:9.35,
+    statedAmt:"$1,402M notional", sharesDesc:"14,020,744 shares (Apr 20, 2026)",
     secLink:"https://www.sec.gov/Archives/edgar/data/1050446/000119312525017728/d835001dfwp.htm",
     pressLink:"https://www.strategy.com/press/microstrategy-announces-pricing-of-strike-preferred-stock-offering-strk_01-31-2025",
     desc:"JUNIOR PREFERRED. 8% fixed; CUMULATIVE; $100 stated. IPO $80/share. Junior to STRF and STRC in liquidation. Senior to STRD and common only.",
@@ -261,7 +261,17 @@ const INSTRUMENTS = [
     desc:"MOST JUNIOR PREFERRED. 10% fixed; NON-CUMULATIVE — missed dividends lost permanently. Junior to STRF, STRC, STRK. Senior to common only. Explains persistent discount to par.",
   },
   {
-    rank:11, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
+    rank:11, name:"Stretto Perpetual Preferred (EUR)", ticker:"STRE", type:"Junior Preferred (€)", cls:"b-pref", tier:"3C",
+    amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
+    issued:"2026", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
+    annualPayM:91.46, monthlyPayM:7.62,
+    statedAmt:"$914.6M notional", sharesDesc:"9,145,775 shares (Apr 20, 2026)",
+    secLink:"https://www.strategy.com/financial-documents",
+    pressLink:"https://www.strategy.com/financial-documents",
+    desc:"EURO-DENOMINATED PREFERRED. 10% dividend on $100 stated. Ranks with STRD/STRK junior preferreds. €7.75M international notional at 1.1802 USD/EUR.",
+  },
+  {
+    rank:12, name:"Common Stock", ticker:"MSTR", type:"Common Equity", cls:"b-com", tier:4,
     amount:null, coupon:null, ytm:null, maturity:"N/A", matStr:null,
     issued:"Jun 1998", conv:"N/A", cumulative:null, payFreq:"No dividend",
     annualPayM:0, monthlyPayM:0,
@@ -319,10 +329,11 @@ const DEBT_PAYMENTS = [
   {name:"2.25% Conv 2032",            notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
 ];
 const PREF_PAYMENTS = [
-  {name:"STRK — 8% fixed",       stated:"$1,398M", annual:111.9, monthly:9.32,  freq:"Quarterly",  cum:"Cumulative",    color:"#f97316"},
-  {name:"STRF — 10% fixed",      stated:"$1,284M", annual:128.4, monthly:10.70, freq:"Quarterly",  cum:"Cumulative",    color:"#fb923c"},
-  {name:"STRD — 10% fixed",      stated:"$1,402M", annual:140.2, monthly:11.69, freq:"Quarterly",  cum:"Non-cumulative",color:"#f59e0b"},
-  {name:"STRC — 11.5% variable", stated:"~$6,358M", annual:730.6, monthly:60.88, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
+  {name:"STRK — 8% fixed",       stated:"$1,402M",  annual:112.17, monthly:9.35,  freq:"Quarterly", cum:"Cumulative",    color:"#f97316"},
+  {name:"STRF — 10% fixed",      stated:"$1,284M",  annual:128.40, monthly:10.70, freq:"Quarterly", cum:"Cumulative",    color:"#fb923c"},
+  {name:"STRD — 10% fixed",      stated:"$1,402M",  annual:140.24, monthly:11.69, freq:"Quarterly", cum:"Non-cumulative",color:"#f59e0b"},
+  {name:"STRC — 11.5% variable", stated:"~$8,537M", annual:981.80, monthly:81.82, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
+  {name:"STRE — 10% fixed (€)",  stated:"$914.6M",  annual:91.46,  monthly:7.62,  freq:"Quarterly", cum:"Non-cumulative",color:"#eab308"},
 ];
 
 /* ── Structure chart data (senior → junior) ── */
@@ -335,9 +346,10 @@ const STRUCT_CHART = [
   {name:"0.625% Conv Mar 2030",           amt:800,  type:"Convertible Note", fill:"#06b6d4"},
   {name:"0% Conv Dec 2029",               amt:3000, type:"Convertible Note", fill:"#0891b2"},
   {name:"STRF — Strife (Senior Pref)",    amt:1284, type:"Preferred Equity", fill:"#fb923c"},
-  {name:"STRC — Stretch (2nd-Tier Pref)", amt:6358, type:"Preferred Equity", fill:"#a855f7"},
-  {name:"STRK — Strike (Junior Pref)",    amt:1398, type:"Preferred Equity", fill:"#f97316"},
+  {name:"STRC — Stretch (2nd-Tier Pref)", amt:8537, type:"Preferred Equity", fill:"#a855f7"},
+  {name:"STRK — Strike (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f97316"},
   {name:"STRD — Stride (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f59e0b"},
+  {name:"STRE — Stretto (Junior Pref €)", amt:915,  type:"Preferred Equity", fill:"#eab308"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
 
 /* ═══════════════════════════════════════════════
@@ -521,7 +533,8 @@ const OBLIGATION_MILESTONES = [
   {period:"Q2'25", monthlyDebt:2.89, monthlyPref:31.71, event:"+STRF (Apr) + STRD (Jun 2025)"},
   {period:"Q3'25", monthlyDebt:2.89, monthlyPref:48.0,  event:"+STRC launch ~$2B notional"},
   {period:"Q4'25", monthlyDebt:2.89, monthlyPref:76.5,  event:"STRC ATM expansion ~$5B"},
-  {period:"Q1'26", monthlyDebt:2.89, monthlyPref:92.59, event:"STRC ~$6.4B at 11.5% (current)"},
+  {period:"Q1'26", monthlyDebt:2.89, monthlyPref:92.59, event:"STRC ~$6.4B at 11.5%"},
+  {period:"Apr'26", monthlyDebt:2.89, monthlyPref:121.18, event:"STRC $8.5B + STRE €7.75M (current)"},
 ];
 
 /* ═══════════════════════════════════════════════
