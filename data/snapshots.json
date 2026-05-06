@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-05",
+  "lastUpdated": "2026-05-06",
   "concept": "CashAndCashEquivalentsAtCarryingValue",
   "currentObligations": {
     "monthlyDebt": 2.89,
@@ -10,10 +10,10 @@
     "totalAnnual": 1488.7
   },
   "liveBtc": {
-    "asOfDate": "2026-05-04",
+    "asOfDate": "2026-05-05",
     "btcHoldings": 818334,
     "cashUsd": 2250000000,
-    "debtUsd": 8253923000,
+    "debtUsd": 8254000000,
     "prefNotionalUsd": 13536362100,
     "annualDividendsM": 806.613,
     "basicShares": 350945000,
