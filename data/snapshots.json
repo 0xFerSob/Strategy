@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-06",
+  "lastUpdated": "2026-05-07",
   "concept": "CashAndCashEquivalentsAtCarryingValue",
   "currentObligations": {
     "monthlyDebt": 2.89,
@@ -765,7 +765,7 @@
     },
     {
       "filingDate": "2025-12-31",
-      "form": "10-K",
+      "form": "10-Q",
       "cashM": 2301.5,
       "monthlyDebt": 2.89,
       "monthlyPref": 76.5,
@@ -773,6 +773,17 @@
       "totalAnnual": 952.7,
       "coverageMonths": 29.0,
       "note": "STRC ATM expansion (~$5B notional, rate stepping up)"
+    },
+    {
+      "filingDate": "2026-03-31",
+      "form": "10-Q",
+      "cashM": 2207.2,
+      "monthlyDebt": 2.89,
+      "monthlyPref": 92.59,
+      "totalMonthly": 95.48,
+      "totalAnnual": 1145.8,
+      "coverageMonths": 23.1,
+      "note": "STRC ~$6.4B notional at 11.5%"
     }
   ]
 }
