@@ -29,6 +29,12 @@
     <key>WorkingDirectory</key>
     <string>/Users/fersobrini/Claude projects/.claude/worktrees/peaceful-khayyam-2ce42e</string>
 
+    <!--
+      Three redundant triggers to guarantee "at least every 3 days":
+        1. StartCalendarInterval: daily at 10:00 local time
+        2. StartInterval: 259200s (3 days) heartbeat — fires even if 10:00 missed
+        3. RunAtLoad: catch-up run on login/reboot/launchctl load
+    -->
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
@@ -37,6 +43,9 @@
         <integer>0</integer>
     </dict>
 
+    <key>StartInterval</key>
+    <integer>259200</integer>
+
     <key>StandardOutPath</key>
     <string>/tmp/strategy-updater.out</string>
 
@@ -44,6 +53,6 @@
     <string>/tmp/strategy-updater.err</string>
 
     <key>RunAtLoad</key>
-    <false/>
+    <true/>
 </dict>
 </plist>

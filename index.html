@@ -232,8 +232,8 @@ const INSTRUMENTS = [
     rank:8, name:"Stretch Perpetual Preferred", ticker:"STRC", type:"2nd-Tier Preferred", cls:"b-pref", tier:"3B",
     amount:null, coupon:null, couponLabel:"11.5% (variable)", ytm:11.50, maturity:"Perpetual", matStr:null,
     issued:"Jul 2025", conv:"Variable → MSTR", cumulative:null, payFreq:"Monthly",
-    annualPayM:981.80, monthlyPayM:81.82,
-    statedAmt:"~$8,537M notional", sharesDesc:"85,373,492 shares (Apr 20, 2026)",
+    annualPayM:1206.29, monthlyPayM:100.52,
+    statedAmt:"~$10,489M notional", sharesDesc:"104,894,705 shares (Jun 1, 2026)",
     secLink:"https://www.stifel.com/prospectusfiles/PD_7153.pdf",
     pressLink:"https://www.strategy.com/press/strategy-announces-pricing-of-strc-perpetual-preferred-stock_07-25-2025",
     desc:"2ND-TIER PREFERRED. Variable rate (11.5% Mar 2026) paid MONTHLY. Junior to STRF but SENIOR to STRK & STRD. IPO $90/share. Rate adjusts vs $100 VWAP.",
@@ -264,8 +264,8 @@ const INSTRUMENTS = [
     rank:11, name:"Stretto Perpetual Preferred (EUR)", ticker:"STRE", type:"Junior Preferred (€)", cls:"b-pref", tier:"3C",
     amount:null, coupon:10.000, ytm:10.00, maturity:"Perpetual", matStr:null,
     issued:"2026", conv:"Variable → MSTR", cumulative:false, payFreq:"Quarterly",
-    annualPayM:91.46, monthlyPayM:7.62,
-    statedAmt:"$914.6M notional", sharesDesc:"9,145,775 shares (Apr 20, 2026)",
+    annualPayM:90.44, monthlyPayM:7.54,
+    statedAmt:"$904.4M notional", sharesDesc:"9,044,250 shares (Jun 1, 2026)",
     secLink:"https://www.strategy.com/financial-documents",
     pressLink:"https://www.strategy.com/financial-documents",
     desc:"EURO-DENOMINATED PREFERRED. 10% dividend on $100 stated. Ranks with STRD/STRK junior preferreds. €7.75M international notional at 1.1802 USD/EUR.",
@@ -329,11 +329,11 @@ const DEBT_PAYMENTS = [
   {name:"2.25% Conv 2032",            notional:800,  annual:18.00, monthly:1.50, freq:"Semi-annual", color:"#06b6d4"},
 ];
 const PREF_PAYMENTS = [
-  {name:"STRK — 8% fixed",       stated:"$1,402M",  annual:112.17, monthly:9.35,  freq:"Quarterly", cum:"Cumulative",    color:"#f97316"},
-  {name:"STRF — 10% fixed",      stated:"$1,284M",  annual:128.40, monthly:10.70, freq:"Quarterly", cum:"Cumulative",    color:"#fb923c"},
-  {name:"STRD — 10% fixed",      stated:"$1,402M",  annual:140.24, monthly:11.69, freq:"Quarterly", cum:"Non-cumulative",color:"#f59e0b"},
-  {name:"STRC — 11.5% variable", stated:"~$8,537M", annual:981.80, monthly:81.82, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
-  {name:"STRE — 10% fixed (€)",  stated:"$914.6M",  annual:91.46,  monthly:7.62,  freq:"Quarterly", cum:"Non-cumulative",color:"#eab308"},
+  {name:"STRK — 8% fixed",       stated:"$1,402M",   annual:112.17,  monthly:9.35,   freq:"Quarterly", cum:"Cumulative",    color:"#f97316"},
+  {name:"STRF — 10% fixed",      stated:"$1,284M",   annual:128.40,  monthly:10.70,  freq:"Quarterly", cum:"Cumulative",    color:"#fb923c"},
+  {name:"STRD — 10% fixed",      stated:"$1,402M",   annual:140.24,  monthly:11.69,  freq:"Quarterly", cum:"Non-cumulative",color:"#f59e0b"},
+  {name:"STRC — 11.5% variable", stated:"~$10,489M", annual:1206.29, monthly:100.52, freq:"Monthly",   cum:"Variable",      color:"#a855f7"},
+  {name:"STRE — 10% fixed (€)",  stated:"$904.4M",   annual:90.44,   monthly:7.54,   freq:"Quarterly", cum:"Non-cumulative",color:"#eab308"},
 ];
 
 /* ── Structure chart data (senior → junior) ── */
@@ -345,11 +345,11 @@ const STRUCT_CHART = [
   {name:"0% Conv Mar 2030",               amt:2000, type:"Convertible Note", fill:"#0891b2"},
   {name:"0.625% Conv Mar 2030",           amt:800,  type:"Convertible Note", fill:"#06b6d4"},
   {name:"0% Conv Dec 2029",               amt:3000, type:"Convertible Note", fill:"#0891b2"},
-  {name:"STRF — Strife (Senior Pref)",    amt:1284, type:"Preferred Equity", fill:"#fb923c"},
-  {name:"STRC — Stretch (2nd-Tier Pref)", amt:8537, type:"Preferred Equity", fill:"#a855f7"},
-  {name:"STRK — Strike (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f97316"},
-  {name:"STRD — Stride (Junior Pref)",    amt:1402, type:"Preferred Equity", fill:"#f59e0b"},
-  {name:"STRE — Stretto (Junior Pref €)", amt:915,  type:"Preferred Equity", fill:"#eab308"},
+  {name:"STRF — Strife (Senior Pref)",    amt:1284,  type:"Preferred Equity", fill:"#fb923c"},
+  {name:"STRC — Stretch (2nd-Tier Pref)", amt:10489, type:"Preferred Equity", fill:"#a855f7"},
+  {name:"STRK — Strike (Junior Pref)",    amt:1402,  type:"Preferred Equity", fill:"#f97316"},
+  {name:"STRD — Stride (Junior Pref)",    amt:1402,  type:"Preferred Equity", fill:"#f59e0b"},
+  {name:"STRE — Stretto (Junior Pref €)", amt:904,   type:"Preferred Equity", fill:"#eab308"},
 ].reverse(); // reverse so most junior at top (bottom of chart = most senior)
 
 /* ═══════════════════════════════════════════════
@@ -534,7 +534,8 @@ const OBLIGATION_MILESTONES = [
   {period:"Q3'25", monthlyDebt:2.89, monthlyPref:48.0,  event:"+STRC launch ~$2B notional"},
   {period:"Q4'25", monthlyDebt:2.89, monthlyPref:76.5,  event:"STRC ATM expansion ~$5B"},
   {period:"Q1'26", monthlyDebt:2.89, monthlyPref:92.59, event:"STRC ~$6.4B at 11.5%"},
-  {period:"Apr'26", monthlyDebt:2.89, monthlyPref:121.18, event:"STRC $8.5B + STRE €7.75M (current)"},
+  {period:"Apr'26", monthlyDebt:2.89, monthlyPref:121.18, event:"STRC $8.5B + STRE €7.75M issuance"},
+  {period:"Jun'26", monthlyDebt:2.89, monthlyPref:139.80, event:"STRC ATM expansion → $10.5B (current)"},
 ];
 
 /* ═══════════════════════════════════════════════
@@ -637,8 +638,8 @@ function Dashboard() {
   const btcSpot   = btcPrice ? btcPrice.usd : null;
   const btcChg24  = btcPrice ? btcPrice.usd_24h_change : null;
   const liveBtc   = snapshotsData?.liveBtc || null;
-  const BTC_HELD  = liveBtc?.btcHoldings || 766970;  // live from strategy.com, fallback = 8-K Apr 6 2026
-  const BTC_AS_OF = liveBtc?.asOfDate || "2026-04-06";
+  const BTC_HELD  = liveBtc?.btcHoldings || 843706;  // live from strategy.com, fallback = Jun 1 2026
+  const BTC_AS_OF = liveBtc?.asOfDate || "2026-06-01";
   const BTC_COST  = 75644;   // avg cost basis per 8-K Apr 6, 2026
   const treasuryVal = btcSpot ? (BTC_HELD * btcSpot / 1e9).toFixed(2) : "...";
 

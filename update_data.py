@@ -49,8 +49,8 @@ PREF_PAYMENTS = [
     {"name": "STRK 8% fixed",       "annual": 112.17, "monthly": 9.35},
     {"name": "STRF 10% fixed",      "annual": 128.40, "monthly": 10.70},
     {"name": "STRD 10% fixed",      "annual": 140.24, "monthly": 11.69},
-    {"name": "STRC 11.5% variable", "annual": 981.80, "monthly": 81.82},
-    {"name": "STRE 10% fixed (€)",  "annual": 91.46,  "monthly": 7.62},
+    {"name": "STRC 11.5% variable", "annual": 1206.29, "monthly": 100.52},
+    {"name": "STRE 10% fixed (€)",  "annual": 90.44,   "monthly": 7.54},
 ]
 
 # ── Historical obligation schedule ────────────────────────────────────────────
@@ -66,7 +66,8 @@ OBLIGATION_SCHEDULE = [
     ("2025-08-31",      2.89, 48.00,  "+STRC launched Jul/Aug 2025 (~$2B notional, 9.6–10%)"),
     ("2025-10-31",      2.89, 76.50,  "STRC ATM expansion (~$5B notional, rate stepping up)"),
     ("2026-01-31",      2.89, 92.59,  "STRC ~$6.4B notional at 11.5%"),
-    ("2026-04-20",      2.89, 121.18, "STRC $8.5B + STRE €7.75M issuance (current)"),
+    ("2026-04-20",      2.89, 121.18, "STRC $8.5B + STRE €7.75M issuance"),
+    ("2026-06-01",      2.89, 139.80, "STRC ATM expansion → $10.5B (current)"),
 ]
 
 

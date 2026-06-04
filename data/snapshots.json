@@ -3,11 +3,11 @@
   "concept": "CashAndCashEquivalentsAtCarryingValue",
   "currentObligations": {
     "monthlyDebt": 2.89,
-    "monthlyPref": 121.18,
-    "totalMonthly": 124.07,
+    "monthlyPref": 139.8,
+    "totalMonthly": 142.69,
     "annualDebt": 34.6,
-    "annualPref": 1454.1,
-    "totalAnnual": 1488.7
+    "annualPref": 1677.5,
+    "totalAnnual": 1712.1
   },
   "liveBtc": {
     "asOfDate": "2026-06-01",
