@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-24",
+  "lastUpdated": "2026-08-25",
   "concept": "CashAndCashEquivalentsAtCarryingValue",
   "currentObligations": {
     "monthlyDebt": 2.89,
@@ -10,14 +10,14 @@
     "totalAnnual": 1712.1
   },
   "liveBtc": {
-    "asOfDate": "2026-08-17",
+    "asOfDate": "2026-08-24",
     "btcHoldings": 840447,
-    "cashUsd": 4800000000,
+    "cashUsd": 5100000000,
     "debtUsd": 6754000000,
-    "prefNotionalUsd": 15100972100,
+    "prefNotionalUsd": 14966065900,
     "annualDividendsM": 806.613,
-    "basicShares": 397662000,
-    "btcYieldYtd": 0.9,
+    "basicShares": 415929000,
+    "btcYieldYtd": -3.3,
     "preferreds": {
       "STRK": {
         "shares": 14020744,
@@ -34,11 +34,11 @@
         "monthlyM": 10.7
       },
       "STRC": {
-        "shares": 101152892,
+        "shares": 99721680,
         "dividendPct": 12,
-        "notionalM": 10115.29,
-        "annualM": 1213.83,
-        "monthlyM": 101.15
+        "notionalM": 9972.17,
+        "annualM": 1196.66,
+        "monthlyM": 99.72
       },
       "STRD": {
         "shares": 14024221,
@@ -48,15 +48,15 @@
         "monthlyM": 11.69
       },
       "STRE": {
-        "shares": 8972175,
+        "shares": 9054325,
         "dividendPct": 10,
-        "notionalM": 897.22,
-        "annualM": 89.72,
-        "monthlyM": 7.48
+        "notionalM": 905.43,
+        "annualM": 90.54,
+        "monthlyM": 7.55
       }
     },
-    "totalPrefMonthlyM": 140.37,
-    "totalPrefAnnualM": 1684.36
+    "totalPrefMonthlyM": 139.01,
+    "totalPrefAnnualM": 1668.01
   },
   "snapshots": [
     {
